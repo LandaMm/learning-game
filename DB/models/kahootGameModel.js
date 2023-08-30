@@ -4,6 +4,6 @@ const KahootGameSchema = new mongoose.Schema({
     id: Number,
 });
 
-const KahootGame = mongoose.model('kahootGames', KahootGameSchema);
+const KahootGame = mongoose.model('kahootgames', KahootGameSchema);
 
 module.exports = KahootGame;
