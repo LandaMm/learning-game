@@ -19,7 +19,10 @@ socket.on('showGamePin', function (data) {
 });
 
 socket.on('sikimiki', function (data) {
-    console.log("sikimiki");
+    console.log("sikimiki", data);
+});
+socket.on('sikimikitwo', function (data) {
+    console.log("sikimikitwo", data);
 });
 
 socket.on('updatePlayerLobby', function (data) {

@@ -23,6 +23,10 @@ module.exports = (io) => {
                 // ovo nece da radi tj, socket.on('updatePlayerLobby', function (data) { nece da se okine
                 io.sockets.to(params.pin).emit('updatePlayerLobby', playersInGame);
                 // io.to(params.pin).emit('updatePlayerLobby', "KKKKK"); old code
+                io.emit('sikimiki');
+                socket.emit('sikimikitwo', playersInGame);
+
+
 
                 console.log("7. Rooms for socket:", socket.rooms); // Will show rooms this socket is in
                 console.log("8. AllRooms", io.sockets.adapter.rooms);
@@ -45,7 +49,7 @@ module.exports = (io) => {
                     console.log(err.stack);
                 });
 
-                io.emit('sikimiki');
+
             } else {
                 socket.emit('noGameFound');
             }
