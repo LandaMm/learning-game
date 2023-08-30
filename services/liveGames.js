@@ -1,23 +1,26 @@
 class LiveGames {
-    constructor () {
+    constructor() {
         this.games = [];
     }
-    addGame(pin, hostId, gameLive, gameData){
-        var game = {pin, hostId, gameLive, gameData};
+
+    addGame(pin, hostId, gameLive, gameData) {
+        const game = { pin, hostId, gameLive, gameData };
         this.games.push(game);
         return game;
     }
-    removeGame(hostId){
-        var game = this.getGame(hostId);
-        
-        if(game){
-            this.games = this.games.filter((game) => game.hostId !== hostId);
+
+    removeGame(hostId) {
+        const game = this.getGame(hostId);
+
+        if (game) {
+            this.games = this.games.filter(game => game.hostId !== hostId);
         }
         return game;
     }
-    getGame(hostId){
-        return this.games.filter((game) => game.hostId === hostId)[0]
+
+    getGame(hostId) {
+        return this.games.find(game => game.hostId === hostId);
     }
 }
 
-module.exports = {LiveGames};
+module.exports = { LiveGames };
