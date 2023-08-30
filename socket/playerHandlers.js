@@ -11,33 +11,33 @@ module.exports = (io) => {
             if (game) {
                 console.log('4. Player connected to game');
                 players.addPlayer(game.hostId, socket.id, params.name, { score: 0, answer: 0 });
+
+
+
                 socket.join(params.pin);
                 const playersInGame = players.getPlayers(game.hostId);
 
                 console.log('5. playersInGame', playersInGame);
                 console.log('6. params.pin', params.pin);
 
+                // ovo nece da radi tj, socket.on('updatePlayerLobby', function (data) { nece da se okine
                 io.sockets.to(params.pin).emit('updatePlayerLobby', playersInGame);
+                // io.to(params.pin).emit('updatePlayerLobby', "KKKKK"); old code
 
                 console.log("7. Rooms for socket:", socket.rooms); // Will show rooms this socket is in
                 console.log("8. AllRooms", io.sockets.adapter.rooms);
 
-
                 const allRoomsSet = new Set(io.sockets.adapter.rooms.keys());
 
-                // Filter out individual socket rooms (socket IDs)
                 io.sockets.sockets.forEach((socket) => allRoomsSet.delete(socket.id));
 
                 const allRooms = [...allRoomsSet];
 
                 console.log("10. AllRooms", allRooms);
 
-
-
                 const socketsInRoom = io.sockets.adapter.rooms.get(params.pin);
 
                 console.log(`11. Sockets in room ${params.pin}:`, [...socketsInRoom])
-
 
                 // Handle socket errors
                 socket.on('error', function (err) {
