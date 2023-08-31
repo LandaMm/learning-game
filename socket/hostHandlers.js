@@ -23,7 +23,7 @@ module.exports = () => {
                     console.log("hostJoin games", games);
 
                     socket.join(gamePin);
-                    console.log('Game Created with pin:', gamePin);
+                    console.log('Game Created with pin:', gamePin, Date.now());
                     socket.emit('showGamePin', { pin: gamePin });
                 } else {
                     socket.emit('noGameFound');
