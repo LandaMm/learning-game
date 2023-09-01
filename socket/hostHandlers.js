@@ -33,7 +33,7 @@ module.exports = () => {
                 socket.emit('error', 'An error occurred during game join.');
             }
         },
-        hostJoinGame: async (socket, data) => {
+        hostJoinGame: async (socket, data, utilities) => {
             const oldHostId = data.id;
             console.log("hostJoinGame oldHostId", oldHostId);
             const game = games.getGame(oldHostId);
@@ -49,7 +49,7 @@ module.exports = () => {
                     }
                 }
 
-                await emitGameQuestions(game.gameData.gameid);
+                await utilities.emitGameQuestions(game.gameData.gameid);
                 io.to(game.pin).emit('gameStartedPlayer');
                 game.gameData.questionLive = true;
             } else {

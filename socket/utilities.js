@@ -6,6 +6,16 @@ var players = new Players();
 const KahootGame = require('../DB/models/kahootGameModel'); // Replace with your actual model path
 
 
+// Insert a new game
+const insertNewGame = async (gameData) => {
+    try {
+        return await KahootGame.insertOne(gameData);
+    } catch (err) {
+        console.error("Error inserting new game data:", err);
+        return null;
+    }
+};
+
 // Fetch game data by ID
 const findAll = async () => {
     try {
@@ -117,5 +127,6 @@ module.exports = {
     handlePlayerDisconnect,
     handlePlayerAnswer,
     emitGameQuestions,
-    findAll
+    findAll,
+    insertNewGame
 };
