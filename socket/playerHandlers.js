@@ -1,7 +1,7 @@
-const { fetchGameDataById, handlePlayerAnswer } = require('./utilities');
-
 module.exports = (io) => {
     return {
+
+
         playerJoin: (socket, params, games, players) => {
             const game = games.games.find(g => g.pin.toString() === params.pin);
 
@@ -34,14 +34,14 @@ module.exports = (io) => {
             }
         },
 
-        playerAnswer: async (socket, num, games, players) => {
+        playerAnswer: async (socket, num, games, players, utilities) => {
             const player = players.getPlayer(socket.id);
             const game = games.getGame(player.hostId);
 
             if (game && game.gameData.questionLive) {
-                const gameData = await fetchGameDataById(game.gameData.gameid);
+                const gameData = await utilities.fetchGameDataById(game.gameData.gameid);
                 if (gameData) {
-                    handlePlayerAnswer(player, game, num);
+                    utilities.handlePlayerAnswer(player, game, num);
                 } else {
                     socket.emit('error', 'An error occurred fetching game data.');
                 }

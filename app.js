@@ -1,33 +1,24 @@
-//Import dependencies
 const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-
-//Import classes
+const connectDB = require('./DB/dbConnect');
 const initializeSocketHandlers = require('./socket/socketHandlers');
+require('dotenv').config();
 
 const publicPath = path.join(__dirname, '/public');
-var app = express();
-var server = http.createServer(app);
-var io = socketIO(server);
 
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-const connectDB = require('./DB/dbConnect');
+// Connect to the database
 connectDB();
-
-
 
 app.use(express.static(publicPath));
 
-//Starting server on port 3000
-server.listen(3333, () => {
-    console.log("Server started on port 3333");
+server.listen(process.env.PORT, () => {
+    console.log(`Server started on port ${process.env.PORT}`);
 });
 
-
 initializeSocketHandlers(io);
-
-
-
-

@@ -32,6 +32,5 @@ module.exports = (io) => {
         socket.on('player-join-game', (data) => playerHandlers(io).playerJoinGame(socket, data, games, players));
 
 
-
     });
 };
