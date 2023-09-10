@@ -4,8 +4,8 @@ const utilities = require("../utilities");
 const games = new LiveGames();
 
 // import host handlers
-const hostJoinHandler = require("./join");
-const hostJoinGameHandler = require("./join-game");
+const hostJoinHandler = require("./handlers/join");
+const hostJoinGameHandler = require("./handlers/join-game");
 
 /**
  *

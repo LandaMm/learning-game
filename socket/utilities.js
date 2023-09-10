@@ -17,10 +17,11 @@ const insertNewGame = async (gameData) => {
 // Fetch game data by ID
 const findAll = async () => {
   try {
-    return await KahootGame.find();
+    return await games.findAll();
   } catch (err) {
     console.error("Error fetching game data:", err);
-    socket.emit("error", "An error occurred fetching game data.");
+    // FIXME: figure out something with that
+    // socket.emit("error", "An error occurred fetching game data.");
     return null;
   }
 };
@@ -30,15 +31,16 @@ const fetchGameDataById = async (id) => {
     return await KahootGame.findOne({ id: parseInt(id) });
   } catch (err) {
     console.error("Error fetching game data:", err);
-    socket.emit("error", "An error occurred fetching game data.");
+    // FIXME: figure out something with that
+    // socket.emit("error", "An error occurred fetching game data.");
     return null;
   }
 };
 
 // Helper functions
-function handleHostDisconnect(game) {
+const handleHostDisconnect = async (game, io, socket) => {
   if (!game.gameLive) {
-    games.removeGame(socket.id);
+    games.removeGame(game.hostId);
     console.log("Game ended with pin:", game.pin);
 
     const playersToRemove = players.getPlayers(game.hostId);
@@ -47,9 +49,9 @@ function handleHostDisconnect(game) {
     io.to(game.pin).emit("hostDisconnect");
     socket.leave(game.pin);
   }
-}
+};
 
-function handlePlayerDisconnect(playerId) {
+function handlePlayerDisconnect(playerId, io, socket) {
   const player = players.getPlayer(playerId);
   if (player) {
     const game = games.getGame(player.hostId);
@@ -62,7 +64,7 @@ function handlePlayerDisconnect(playerId) {
   }
 }
 
-async function handlePlayerAnswer(player, game, num) {
+async function handlePlayerAnswer(player, game, num, socket, io) {
   player.gameData.answer = num;
   game.gameData.playersAnswered++;
 
@@ -97,7 +99,7 @@ async function handlePlayerAnswer(player, game, num) {
 }
 
 // Emit game questions to the host
-const emitGameQuestions = async (gameId) => {
+const emitGameQuestions = async (gameId, socket) => {
   try {
     const gameData = await KahootGame.findOne({ id: parseInt(gameId) });
 
