@@ -8,7 +8,7 @@ const debug = require("debug");
 require("dotenv").config();
 
 const debugApp = debug("app");
-const debugSocket = debug("socket.io");
+// const debugSocket = debug("socket.io");
 
 const publicPath = path.join(__dirname, "/public");
 
