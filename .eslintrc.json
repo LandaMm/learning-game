@@ -5,6 +5,7 @@
     "es2021": true,
     "node": true
   },
+  "ignorePatterns": ["public/*"],
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": "latest"
