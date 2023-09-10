@@ -7,9 +7,9 @@ const playerAnswerHandler = async (
   players,
   utilities,
 ) => {
-  var player = players.getPlayer(socket.id);
+  var player = await players.getPlayer(socket.id);
   var hostId = player.hostId;
-  var playerNum = players.getPlayers(hostId);
+  var playerNum = await players.getPlayers(hostId);
   var game = games.getGame(hostId);
 
   if (game.gameData.questionLive == true) {
@@ -35,7 +35,7 @@ const playerAnswerHandler = async (
       // Checks if all players answered
       if (game.gameData.playersAnswered == playerNum.length) {
         game.gameData.questionLive = false; // Question has been ended bc players all answered under time
-        var playerData = players.getPlayers(game.hostId);
+        var playerData = await players.getPlayers(game.hostId);
         io.to(game.pin).emit("questionOver", playerData, correctAnswer); // Tell everyone that question is over
       } else {
         // update host screen of num players answered

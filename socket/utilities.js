@@ -1,8 +1,8 @@
-const { LiveGames } = require("../services/liveGames");
+const { Games } = require("../services/games");
 const { Players } = require("../services/players");
-var games = new LiveGames();
+var games = new Games();
 var players = new Players();
-const KahootGame = require("../DB/models/kahootGameModel"); // Replace with your actual model path
+const KahootGame = require("../DB/models/game"); // Replace with your actual model path
 
 // Insert a new game
 const insertNewGame = async (gameData) => {
@@ -28,7 +28,7 @@ const findAll = async () => {
 // Fetch game data by ID
 const fetchGameDataById = async (id) => {
   try {
-    return await KahootGame.findOne({ id: parseInt(id) });
+    return await games.getGameById(id);
   } catch (err) {
     console.error("Error fetching game data:", err);
     // FIXME: figure out something with that
@@ -43,7 +43,7 @@ const handleHostDisconnect = async (game, io, socket) => {
     games.removeGame(game.hostId);
     console.log("Game ended with pin:", game.pin);
 
-    const playersToRemove = players.getPlayers(game.hostId);
+    const playersToRemove = await players.getPlayers(game.hostId);
     playersToRemove.forEach((p) => players.removePlayer(p.playerId));
 
     io.to(game.pin).emit("hostDisconnect");
@@ -51,18 +51,18 @@ const handleHostDisconnect = async (game, io, socket) => {
   }
 };
 
-function handlePlayerDisconnect(playerId, io, socket) {
-  const player = players.getPlayer(playerId);
+const handlePlayerDisconnect = async (playerId, io, socket) => {
+  const player = await players.getPlayer(playerId);
   if (player) {
     const game = games.getGame(player.hostId);
     if (game && !game.gameLive) {
       players.removePlayer(playerId);
-      const playersInGame = players.getPlayers(game.hostId);
+      const playersInGame = await players.getPlayers(game.hostId);
       io.to(game.pin).emit("updatePlayerLobby", playersInGame);
       socket.leave(game.pin);
     }
   }
-}
+};
 
 async function handlePlayerAnswer(player, game, num, socket, io) {
   player.gameData.answer = num;
@@ -81,16 +81,15 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
       socket.emit("answerResult", true);
     }
 
-    if (
-      game.gameData.playersAnswered == players.getPlayers(game.hostId).length
-    ) {
+    const playersInGame = await players.getPlayers(game.hostId);
+
+    if (game.gameData.playersAnswered == playersInGame.length) {
       game.gameData.questionLive = false;
-      const playerData = players.getPlayers(game.hostId);
-      io.to(game.pin).emit("questionOver", playerData, correctAnswer);
+      io.to(game.pin).emit("questionOver", playersInGame, correctAnswer);
     } else {
       io.to(game.pin).emit("updatePlayersAnswered", {
-        playersInGame: players.getPlayers(game.hostId).length,
         playersAnswered: game.gameData.playersAnswered,
+        playersInGame,
       });
     }
   } catch (err) {
@@ -101,10 +100,12 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
 // Emit game questions to the host
 const emitGameQuestions = async (gameId, socket) => {
   try {
-    const gameData = await KahootGame.findOne({ id: parseInt(gameId) });
+    const gameData = await games.getGameById(gameId);
 
     if (gameData && gameData.questions && gameData.questions.length > 0) {
       const { question, answers, correct } = gameData.questions[0];
+
+      const playersInGame = await players.getPlayers(gameData.hostId);
 
       socket.emit("gameQuestions", {
         q1: question,
@@ -113,7 +114,7 @@ const emitGameQuestions = async (gameId, socket) => {
         a3: answers[2],
         a4: answers[3],
         correct: correct,
-        playersInGame: players.getPlayers(socket.id).length,
+        playersInGame: playersInGame.length,
       });
     }
   } catch (err) {

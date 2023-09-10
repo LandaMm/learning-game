@@ -1,7 +1,7 @@
-const { LiveGames } = require("../../services/liveGames");
+const { Games } = require("../../services/games");
 
 const utilities = require("../utilities");
-const games = new LiveGames();
+const games = new Games();
 
 // import host handlers
 const hostJoinHandler = require("./handlers/join");

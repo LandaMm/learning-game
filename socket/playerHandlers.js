@@ -1,7 +1,7 @@
-const games = new LiveGames();
+const games = new Games();
 const players = new Players();
 
-const { LiveGames } = require("../services/liveGames");
+const { Games } = require("../services/games");
 const { Players } = require("../services/players");
 const playerJoinHandler = require("./player/handlers/playerJoin");
 const playerJoinGameHandler = require("./player/handlers/playerJoinGame");

@@ -1,31 +1,25 @@
+const Player = require("../DB/models/player");
+
 class Players {
   constructor() {
-    this.players = [];
+    this.model = Player;
   }
 
-  addPlayer(hostId, playerId, name, gameData) {
+  async addPlayer(hostId, playerId, name, gameData) {
     const player = { hostId, playerId, name, gameData };
-    this.players.push(player);
-    return player;
+    return await this.model.create(player);
   }
 
-  removePlayer(playerId) {
-    const player = this.getPlayer(playerId);
-
-    if (player) {
-      this.players = this.players.filter(
-        (player) => player.playerId !== playerId,
-      );
-    }
-    return player;
+  async removePlayer(playerId) {
+    return await this.model.findOneAndDelete({ playerId }).exec();
   }
 
-  getPlayer(playerId) {
-    return this.players.find((player) => player.playerId === playerId);
+  async getPlayer(playerId) {
+    return await this.model.findOne({ playerId }).exec();
   }
 
-  getPlayers(hostId) {
-    return this.players.filter((player) => player.hostId === hostId);
+  async getPlayers(hostId) {
+    return await this.model.find({ hostId }).exec();
   }
 }
 

@@ -1,5 +1,5 @@
 const nextQuestionHandler = async (socket, io, games, players, utilities) => {
-  var playerData = players.getPlayers(socket.id);
+  var playerData = await players.getPlayers(socket.id);
 
   // Reset players current answer to 0
   for (let player of players.players) {
@@ -30,7 +30,7 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         playersInGame: playerData.length,
       });
     } else {
-      const playersInGame = players.getPlayers(game.hostId);
+      const playersInGame = await players.getPlayers(game.hostId);
       const leaderboard = playersInGame
         .sort((a, b) => b.gameData.score - a.gameData.score)
         .slice(0, 5)

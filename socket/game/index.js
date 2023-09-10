@@ -1,7 +1,7 @@
 const requestGamesHandler = require("./handlers/requestGames");
 const utilities = require("../utilities");
 const gameDisconnectHandler = require("./handlers/disconnect");
-const { LiveGames } = require("../../services/liveGames");
+const { Games } = require("../../services/games");
 const { Players } = require("../../services/players");
 const playerAnswerHandler = require("./handlers/playerAnswer");
 const getScoreHandler = require("./handlers/getScore");
@@ -11,7 +11,7 @@ const nextQuestionHandler = require("./handlers/nextQuestion");
 const startGameHandler = require("./handlers/startGame");
 const newQuizHandler = require("./handlers/newQuiz");
 
-const games = new LiveGames();
+const games = new Games();
 const players = new Players();
 
 const registerGameHandlers = (socket, io) => {

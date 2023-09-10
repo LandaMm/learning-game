@@ -1,4 +1,4 @@
-const playerJoinHandler = (socket, io, params, games, players) => {
+const playerJoinHandler = async (socket, io, params, games, players) => {
   console.log("1. playerJoin params", params);
   console.log("2. playerJoin games.games", games.games);
   const game = games.games.find((g) => g.pin.toString() === params.pin);
@@ -6,7 +6,7 @@ const playerJoinHandler = (socket, io, params, games, players) => {
 
   if (game) {
     console.log("4. Player connected to game");
-    players.addPlayer(game.hostId, socket.id, params.name, {
+    await players.addPlayer(game.hostId, socket.id, params.name, {
       score: 0,
       answer: 0,
     });
@@ -17,7 +17,7 @@ const playerJoinHandler = (socket, io, params, games, players) => {
       console.log("Socket", socket.id, "joined rooms:", rooms);
     });
 
-    const playersInGame = players.getPlayers(game.hostId);
+    const playersInGame = await players.getPlayers(game.hostId);
     console.log("5. playersInGame", playersInGame);
     console.log("6. params.pin", params.pin);
 

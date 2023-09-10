@@ -1,8 +1,8 @@
-const KahootGame = require("../DB/models/kahootGameModel");
+const Game = require("../DB/models/game");
 
-class LiveGames {
+class Games {
   constructor() {
-    this.model = KahootGame;
+    this.model = Game;
   }
 
   async addGame(pin, hostId, gameLive, gameData) {
@@ -22,6 +22,10 @@ class LiveGames {
   async getGame(hostId) {
     return await this.model.findOne({ hostId }).exec();
   }
+
+  async getGameById(gameId) {
+    return await this.model.findById(gameId).exec();
+  }
 }
 
-module.exports = { LiveGames };
+module.exports = { Games };
