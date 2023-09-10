@@ -1,17 +1,23 @@
 const nextQuestionHandler = async (socket, io, games, players, utilities) => {
   var playerData = await players.getPlayers(socket.id);
 
+  console.log(playerData);
+
   // Reset players current answer to 0
-  for (let player of players.players) {
+  for await (let player of playerData) {
     if (player.hostId == socket.id) {
       player.gameData.answer = 0;
+      player.markModified("gameData");
+      await player.save();
     }
   }
 
-  var game = games.getGame(socket.id);
+  var game = await games.getGame(socket.id);
   game.gameData.playersAnswered = 0;
   game.gameData.questionLive = true;
   game.gameData.question += 1;
+  game.markModified("gameData");
+  await game.save();
   var gameid = game.gameData.gameid;
 
   try {
@@ -36,6 +42,12 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         .slice(0, 5)
         .map((p) => ({ name: p.name, score: p.gameData.score }));
 
+      console.log("emitting game over event");
+      console.log(
+        "player ids",
+        playersInGame.map((p) => p.playerId),
+      );
+      console.log(io.sockets.adapter.rooms);
       io.to(game.pin).emit("GameOver", {
         num1: leaderboard[0]?.name || "",
         num2: leaderboard[1]?.name || "",
@@ -47,9 +59,9 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
   } catch (err) {
     console.error("Error fetching game data:", err);
     socket.emit("error", "An error occurred fetching game data.");
+  } finally {
+    io.to(game.pin).emit("nextQuestionPlayer");
   }
-
-  io.to(game.pin).emit("nextQuestionPlayer");
 };
 
 module.exports = nextQuestionHandler;

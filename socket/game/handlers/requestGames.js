@@ -1,6 +1,6 @@
-const requestGamesHandler = async (socket, utilities) => {
+const requestGamesHandler = async (socket, quizes) => {
   try {
-    const gamesList = await utilities.findAll();
+    const gamesList = await quizes.getAllQuizes();
     console.log("gamesList", gamesList);
     socket.emit("gameNamesData", gamesList);
   } catch (err) {

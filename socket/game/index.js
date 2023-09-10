@@ -10,21 +10,23 @@ const timeUpHandler = require("./handlers/timeUp");
 const nextQuestionHandler = require("./handlers/nextQuestion");
 const startGameHandler = require("./handlers/startGame");
 const newQuizHandler = require("./handlers/newQuiz");
+const Quizes = require("../../services/quiz");
 
 const games = new Games();
 const players = new Players();
+const quizes = new Quizes();
 
 const registerGameHandlers = (socket, io) => {
-  socket.on("requestDbNames", () => requestGamesHandler(socket, utilities));
+  socket.on("requestDbNames", () => requestGamesHandler(socket, quizes));
   socket.on("disconnect", () =>
     gameDisconnectHandler(socket, io, games, players),
   );
   // TODO: check if it's correct way of getting num from payload
   socket.on("playerAnswer", (num) =>
-    playerAnswerHandler(socket, io, num, games, players, utilities),
+    playerAnswerHandler(socket, io, num, games, players, quizes),
   );
   socket.on("getScore", () => getScoreHandler(socket, players));
-  socket.on("time", (data) => timeHandler(socket, data));
+  socket.on("time", (data) => timeHandler(players, data));
   socket.on("timeUp", () =>
     timeUpHandler(socket, io, games, players, utilities),
   );

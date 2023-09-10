@@ -1,8 +1,8 @@
-const hostJoinHandler = async (socket, data, games, utilities) => {
+const hostJoinHandler = async (socket, data, games, quizes) => {
   try {
     console.log("1. hostJoin");
     console.log("2. data", data);
-    const gameData = await utilities.fetchGameDataById(data.id);
+    const gameData = await quizes.findById(data.id);
     if (!gameData) {
       socket.emit("noGameFound");
       return;

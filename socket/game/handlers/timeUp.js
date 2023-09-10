@@ -1,6 +1,8 @@
 const timeUpHandler = async (socket, io, games, players, utilities) => {
-  var game = games.getGame(socket.id);
+  var game = await games.getGame(socket.id);
   game.gameData.questionLive = false;
+  game.markModified("gameData");
+  await game.save();
   var playerData = await players.getPlayers(game.hostId);
 
   var gameQuestion = game.gameData.question;

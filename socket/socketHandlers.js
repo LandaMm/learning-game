@@ -5,7 +5,7 @@ const registerPlayerHandlers = require("./player");
 module.exports = (io) => {
   io.on("connection", (socket) => {
     // host
-    registerHostHandlers(socket);
+    registerHostHandlers(socket, io);
 
     // game handlers
     registerGameHandlers(socket, io);

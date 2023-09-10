@@ -3,6 +3,7 @@ var params = jQuery.deparam(window.location.search);
 
 // Ensure connection to server
 socket.on('connect', function () {
+    console.log("session id", socket.id)
     console.log("Connected to server.");
     console.log("Connected to server. params", params);
     document.getElementById('players').value = "";

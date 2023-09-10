@@ -22,6 +22,7 @@ const playerJoinHandler = async (socket, io, params, games, players) => {
     console.log("6. params.pin", params.pin);
 
     io.to(params.pin).emit("updatePlayerLobby", playersInGame);
+    io.to(game.hostId).emit("updatePlayerLobby", playersInGame);
     //io.emit('updatePlayerLobby', playersInGame);
     //io.emit('sikimiki');
     //io.emit('sikimikitwo', { aaa: "asdsa" });

@@ -7,6 +7,7 @@ class Players {
 
   async addPlayer(hostId, playerId, name, gameData) {
     const player = { hostId, playerId, name, gameData };
+    console.log("adding player", player);
     return await this.model.create(player);
   }
 

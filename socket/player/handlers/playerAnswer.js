@@ -1,6 +1,6 @@
 const playerAnswerHandler = async (socket, num, games, players, utilities) => {
   const player = await players.getPlayer(socket.id);
-  const game = games.getGame(player.hostId);
+  const game = await games.getGame(player.hostId);
 
   if (game && game.gameData.questionLive) {
     const gameData = await utilities.fetchGameDataById(game.gameData.gameid);

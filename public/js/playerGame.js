@@ -4,6 +4,8 @@ var correct = false;
 var name;
 var score = 0;
 
+var gameIsOver = false;
+
 var params = jQuery.deparam(window.location.search); //Gets the id from url
 
 socket.on('connect', function() {
@@ -66,6 +68,7 @@ socket.on('newScore', function(data){
 });
 
 socket.on('nextQuestionPlayer', function(){
+    if (gameIsOver) return
     correct = false;
     playerAnswered = false;
     
@@ -91,7 +94,9 @@ socket.on('playerGameData', function(data){
    }
 });
 
-socket.on('GameOver', function(){
+socket.on('GameOver', function(data){
+    console.log("PLAYER GAME OVER", data)
+    gameIsOver = true
     document.body.style.backgroundColor = "#FFFFFF";
     document.getElementById('answer1').style.visibility = "hidden";
     document.getElementById('answer2').style.visibility = "hidden";

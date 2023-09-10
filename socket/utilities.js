@@ -33,7 +33,7 @@ const findAll = async () => {
 // Fetch game data by ID
 const fetchGameDataById = async (id) => {
   try {
-    return await games.getGameById(id);
+    return await quizes.findById(id);
   } catch (err) {
     console.error("Error fetching game data:", err);
     // FIXME: figure out something with that
@@ -73,6 +73,12 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
   player.gameData.answer = num;
   game.gameData.playersAnswered++;
 
+  player.markModified("gameData");
+  game.markModified("gameData");
+
+  await player.save();
+  await game.save();
+
   const gameQuestion = game.gameData.question;
 
   try {
@@ -82,6 +88,8 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
 
     if (num == correctAnswer) {
       player.gameData.score += 100;
+      player.markModified("gameData");
+      await player.save();
       io.to(game.pin).emit("getTime", socket.id);
       socket.emit("answerResult", true);
     }
@@ -90,6 +98,8 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
 
     if (game.gameData.playersAnswered == playersInGame.length) {
       game.gameData.questionLive = false;
+      game.markModified("gameData");
+      await game.save();
       io.to(game.pin).emit("questionOver", playersInGame, correctAnswer);
     } else {
       io.to(game.pin).emit("updatePlayersAnswered", {

@@ -9,6 +9,10 @@ class Quizes {
     return await this.model.create(data);
   }
 
+  async findById(id) {
+    return await this.model.findById(id).exec();
+  }
+
   async getAllQuizes() {
     return await this.model.find({}).exec();
   }
