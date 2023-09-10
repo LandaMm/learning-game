@@ -1,7 +1,7 @@
 const newQuizHandler = async (socket, data, utilities) => {
   try {
     // Inserting the new game data
-    const game = await utilities.insertNewGame(data);
+    const game = await utilities.insertNewQuizz(data);
 
     socket.emit("startGameFromCreator", game._id);
   } catch (err) {
