@@ -1,3 +1,5 @@
+// DUMMY (FOR TESTING) ENDPOINT, may be removed
+
 var express = require("express");
 var router = express.Router();
 // const Joi = require('joi');
