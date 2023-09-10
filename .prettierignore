@@ -2,6 +2,5 @@
 build
 coverage
 node_modules/
-DB/
 public/
 README.md
