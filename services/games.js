@@ -26,6 +26,10 @@ class Games {
   async getGameById(gameId) {
     return await this.model.findById(gameId).exec();
   }
+
+  async getGameByPin(pin) {
+    return await this.model.findOne({ pin }).exec();
+  }
 }
 
 module.exports = { Games };
