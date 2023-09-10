@@ -1,25 +1,23 @@
+const KahootGame = require("../DB/models/kahootGameModel");
+
 class LiveGames {
   constructor() {
-    this.games = [];
+    this.model = KahootGame;
   }
 
-  addGame(pin, hostId, gameLive, gameData) {
+  async addGame(pin, hostId, gameLive, gameData) {
     const game = { pin, hostId, gameLive, gameData };
+    await this.model.create(game);
     this.games.push(game);
     return game;
   }
 
-  removeGame(hostId) {
-    const game = this.getGame(hostId);
-
-    if (game) {
-      this.games = this.games.filter((game) => game.hostId !== hostId);
-    }
-    return game;
+  async removeGame(hostId) {
+    await this.model.findOneAndDelete({ hostId });
   }
 
-  getGame(hostId) {
-    return this.games.find((game) => game.hostId === hostId);
+  async getGame(hostId) {
+    return await this.model.findOne({ hostId });
   }
 }
 
