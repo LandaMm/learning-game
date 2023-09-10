@@ -17,13 +17,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Connect to the database
-connectDB();
-
 app.use(express.static(publicPath));
 
-server.listen(process.env.PORT, () => {
-  debugApp(`Server started on port ${process.env.PORT}`);
-});
-
 initializeSocketHandlers(io);
+
+connectDB().then(() => {
+  server.listen(process.env.PORT, () => {
+    debugApp(`Server started on port ${process.env.PORT}`);
+  });
+});
