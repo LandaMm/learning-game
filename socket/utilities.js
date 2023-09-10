@@ -1,13 +1,14 @@
 const { Games } = require("../services/games");
 const { Players } = require("../services/players");
-var games = new Games();
-var players = new Players();
-const KahootGame = require("../DB/models/game"); // Replace with your actual model path
+const Quizes = require("../services/quiz");
+const games = new Games();
+const players = new Players();
+const quizes = new Quizes();
 
 // Insert a new game
-const insertNewGame = async (gameData) => {
+const insertNewQuizz = async (gameData) => {
   try {
-    return await KahootGame.insertOne(gameData);
+    return await quizes.addQuiz(gameData);
   } catch (err) {
     console.error("Error inserting new game data:", err);
     return null;
@@ -130,5 +131,5 @@ module.exports = {
   handlePlayerAnswer,
   emitGameQuestions,
   findAll,
-  insertNewGame,
+  insertNewQuizz,
 };
