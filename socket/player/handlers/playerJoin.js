@@ -1,7 +1,7 @@
 const playerJoinHandler = async (socket, io, params, games, players) => {
   console.log("1. playerJoin params", params);
-  console.log("2. playerJoin games.games", games.games);
-  const game = games.games.find((g) => g.pin.toString() === params.pin);
+  console.log("2. playerJoin games", games);
+  const game = await games.getGameByPin(params.pin);
   console.log("3. playerJoin game", game);
 
   if (game) {
