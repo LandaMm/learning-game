@@ -24,7 +24,7 @@ const hostJoinGameHandler = async (
         await player.save();
       }
 
-      await utilities.emitGameQuestions(game.gameData.gameid);
+      await utilities.emitGameQuestions(game.gameData.gameid, socket);
       io.to(game.pin).emit("gameStartedPlayer");
       game.gameData.questionLive = true;
 
