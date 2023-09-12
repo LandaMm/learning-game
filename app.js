@@ -5,6 +5,7 @@ const socketIO = require("socket.io");
 const connectDB = require("./DB/dbConnect");
 const initializeSocketHandlers = require("./socket/socketHandlers");
 const debug = require("debug");
+const cors = require("cors");
 require("dotenv").config();
 
 const debugApp = debug("app");
@@ -18,6 +19,8 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 app.use(express.static(publicPath));
+
+app.use(cors());
 
 initializeSocketHandlers(io);
 
