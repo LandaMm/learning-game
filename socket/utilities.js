@@ -115,7 +115,7 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
 // Emit game questions to the host
 const emitGameQuestions = async (gameId, socket) => {
   try {
-    const gameData = await games.getGameById(gameId);
+    const gameData = await quizes.findById(gameId);
 
     if (gameData && gameData.questions && gameData.questions.length > 0) {
       const { question, answers, correct } = gameData.questions[0];
