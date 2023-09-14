@@ -13,6 +13,10 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
   }
 
   var game = await games.getGame(socket.id);
+  if (!game) {
+    socket.emit("noGameFound");
+    return;
+  }
   game.gameData.playersAnswered = 0;
   game.gameData.questionLive = true;
   game.gameData.question += 1;
