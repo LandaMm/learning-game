@@ -31,15 +31,20 @@ const ioLogger = winston.createLogger(loggerConfiguration("socket.io"));
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 //
 if (process.env.NODE_ENV !== "production") {
-  appLogger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp(),
-        winston.format.label({ label: "app" }),
-        customFormat,
-      ),
-    }),
+  [
+    [appLogger, "app"],
+    [ioLogger, "socket.io"],
+  ].map(([logger, label]) =>
+    logger.add(
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.timestamp(),
+          winston.format.label({ label }),
+          customFormat,
+        ),
+      }),
+    ),
   );
 }
 

@@ -24,6 +24,7 @@
     "mongoose": "^7.5.0",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2",
+    "socketio-wildcard": "^2.0.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
