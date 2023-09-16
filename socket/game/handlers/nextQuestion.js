@@ -59,6 +59,11 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         num4: leaderboard[3]?.name || "",
         num5: leaderboard[4]?.name || "",
       });
+      // removing all players with game's host ID
+      const result = await players.removePlayersByHostId(game.hostId);
+      console.log("deleted all game's players", result);
+      const gameDeleteResult = await games.removeGame(game.hostId);
+      console.log("removed game by host id", gameDeleteResult);
     }
   } catch (err) {
     console.error("Error fetching game data:", err);
