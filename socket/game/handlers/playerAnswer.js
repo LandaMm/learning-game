@@ -1,12 +1,14 @@
+const { appLogger } = require("../../../logger");
+
 // Sets data in player class to answer from player
 const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
-  console.log("player answer. socket.id", socket.id);
+  appLogger.info("player answer. socket.id", socket.id);
   var player = await players.getPlayer(socket.id);
   var hostId = player.hostId;
   var playerNum = await players.getPlayers(hostId);
   var game = await games.getGame(hostId);
 
-  console.log("player answer->game", game);
+  appLogger.info("player answer->game", game);
 
   if (game.gameData.questionLive == true) {
     //if the question is still live

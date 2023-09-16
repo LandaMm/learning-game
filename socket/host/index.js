@@ -1,3 +1,4 @@
+const { appLogger } = require("../../logger");
 const { Games } = require("../../services/games");
 const { Players } = require("../../services/players");
 const Quizes = require("../../services/quiz");
@@ -20,7 +21,7 @@ const registerHostHandlers = (socket, io) => {
     hostJoinHandler(socket, data, games, quizes),
   );
   socket.on("host-join-game", (data) => {
-    console.log("host-join-game data", data);
+    appLogger.info("host-join-game data", data);
     hostJoinGameHandler(socket, io, data, utilities, games, players);
   });
 };

@@ -1,3 +1,5 @@
+const { appLogger } = require("../../logger");
+
 var socket = io();
 var playerAnswered = false;
 var correct = false;
@@ -95,7 +97,7 @@ socket.on('playerGameData', function(data){
 });
 
 socket.on('GameOver', function(data){
-    console.log("PLAYER GAME OVER", data)
+    appLogger.info("PLAYER GAME OVER", data)
     gameIsOver = true
     document.body.style.backgroundColor = "#FFFFFF";
     document.getElementById('answer1').style.visibility = "hidden";

@@ -1,3 +1,5 @@
+const { appLogger } = require("../../../logger");
+
 const hostJoinGameHandler = async (
   socket,
   io,
@@ -8,9 +10,9 @@ const hostJoinGameHandler = async (
 ) => {
   try {
     const oldHostId = data.id;
-    console.log("hostJoinGame oldHostId", oldHostId);
+    appLogger.info("hostJoinGame oldHostId", oldHostId);
     const game = await games.getGame(oldHostId);
-    console.log("hostJoinGame game found", game);
+    appLogger.info("hostJoinGame game found", game);
 
     if (game) {
       game.hostId = socket.id;
@@ -38,7 +40,7 @@ const hostJoinGameHandler = async (
       socket.emit("noGameFound");
     }
   } catch (err) {
-    console.log("ERROR WHILE LAUNCHING THE GAME", err);
+    appLogger.info("ERROR WHILE LAUNCHING THE GAME", err);
   }
 };
 

@@ -1,7 +1,9 @@
+const { appLogger } = require("../../../logger");
+
 const hostJoinHandler = async (socket, data, games, quizes) => {
   try {
-    console.log("1. hostJoin");
-    console.log("2. data", data);
+    appLogger.info("1. hostJoin");
+    appLogger.info("2. data", data);
     const gameData = await quizes.findById(data.id);
     if (!gameData) {
       socket.emit("noGameFound");
@@ -16,10 +18,10 @@ const hostJoinHandler = async (socket, data, games, quizes) => {
         question: 1,
       });
 
-      console.log("hostJoin games", games);
+      appLogger.info("hostJoin games", games);
 
       socket.join(gamePin);
-      console.log("Game Created with pin:", gamePin, Date.now());
+      appLogger.info("Game Created with pin:", gamePin, Date.now());
       socket.emit("showGamePin", { pin: gamePin });
     } else {
       socket.emit("noGameFound");

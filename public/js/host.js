@@ -1,11 +1,13 @@
+const { appLogger } = require("../../logger");
+
 var socket = io();
 var params = jQuery.deparam(window.location.search);
 
 // Ensure connection to server
 socket.on('connect', function () {
-    console.log("session id", socket.id)
-    console.log("Connected to server.");
-    console.log("Connected to server. params", params);
+    appLogger.info("session id", socket.id)
+    appLogger.info("Connected to server.");
+    appLogger.info("Connected to server. params", params);
     document.getElementById('players').value = "";
 
     //Tell server that it is host connection
@@ -14,21 +16,21 @@ socket.on('connect', function () {
 
 socket.on('showGamePin', function (data) {
 
-    console.log("showGamePin", data);
+    appLogger.info("showGamePin", data);
 
     document.getElementById('gamePinText').innerHTML = data.pin;
 });
 
 socket.on('sikimiki', function (data) {
-    console.log("CLIENT sikimiki", data, Date.now());
+    appLogger.info("CLIENT sikimiki", data, Date.now());
 });
 socket.on('sikimikitwo', function (data) {
-    console.log("CLIENT sikimikitwo", data, Date.now());
+    appLogger.info("CLIENT sikimikitwo", data, Date.now());
 });
 
 socket.on('updatePlayerLobby', function (data) {
     alert("HIT")
-    console.log("updatePlayerLobby");
+    appLogger.info("updatePlayerLobby");
     document.getElementById('players').value = "";
 
     for (var i = 0; i < data.length; i++) {
@@ -45,7 +47,7 @@ function endGame() {
 }
 
 socket.on('gameStarted', function (id) {
-    console.log('Game Started!');
+    appLogger.info('Game Started!');
     window.location.href = "/host/game/" + "?id=" + id;
 });
 
@@ -55,6 +57,6 @@ socket.on('noGameFound', function () {
 
 // Handle socket errors
 socket.on('error', function (err) {
-    console.log("Socket.IO Error");
-    console.log(err.stack);  // this is shown in the browser console
+    appLogger.info("Socket.IO Error");
+    appLogger.info(err.stack);  // this is shown in the browser console
 });

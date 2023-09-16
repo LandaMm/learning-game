@@ -1,7 +1,9 @@
+const { appLogger } = require("../../../logger");
+
 const requestGamesHandler = async (socket, quizes) => {
   try {
     const gamesList = await quizes.getAllQuizes();
-    console.log("gamesList", gamesList);
+    appLogger.info("gamesList", gamesList);
     socket.emit("gameNamesData", gamesList);
   } catch (err) {
     console.error("Error fetching game names:", err);

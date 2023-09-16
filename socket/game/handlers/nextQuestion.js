@@ -1,7 +1,9 @@
+const { appLogger } = require("../../../logger");
+
 const nextQuestionHandler = async (socket, io, games, players, utilities) => {
   var playerData = await players.getPlayers(socket.id);
 
-  console.log(playerData);
+  appLogger.info(playerData);
 
   // Reset players current answer to 0
   for await (let player of playerData) {
@@ -46,12 +48,12 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         .slice(0, 5)
         .map((p) => ({ name: p.name, score: p.gameData.score }));
 
-      console.log("emitting game over event");
-      console.log(
+      appLogger.info("emitting game over event");
+      appLogger.info(
         "player ids",
         playersInGame.map((p) => p.playerId),
       );
-      console.log(io.sockets.adapter.rooms);
+      appLogger.info(io.sockets.adapter.rooms);
       io.to(game.pin).emit("GameOver", {
         num1: leaderboard[0]?.name || "",
         num2: leaderboard[1]?.name || "",
@@ -61,9 +63,9 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
       });
       // removing all players with game's host ID
       const result = await players.removePlayersByHostId(game.hostId);
-      console.log("deleted all game's players", result);
+      appLogger.info("deleted all game's players", result);
       const gameDeleteResult = await games.removeGame(game.hostId);
-      console.log("removed game by host id", gameDeleteResult);
+      appLogger.info("removed game by host id", gameDeleteResult);
     }
   } catch (err) {
     console.error("Error fetching game data:", err);

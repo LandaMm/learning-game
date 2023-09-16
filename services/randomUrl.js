@@ -1,6 +1,7 @@
 // DUMMY (FOR TESTING) ENDPOINT, may be removed
 
 var express = require("express");
+const { appLogger } = require("../logger");
 var router = express.Router();
 // const Joi = require('joi');
 
@@ -10,14 +11,14 @@ var router = express.Router();
 
 router.get("/", async (req, res) => {
   const { body } = req;
-  console.log("Body START : ", body);
+  appLogger.info("Body START : ", body);
 
   try {
     res.json({
       balance: "TEST RESPONSE",
     });
   } catch (err) {
-    console.log(err);
+    appLogger.info(err);
     return res.status(400).json({ error: err.toString() });
   }
 });

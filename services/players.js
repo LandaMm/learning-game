@@ -1,4 +1,5 @@
 const Player = require("../DB/models/player");
+const { appLogger } = require("../logger");
 
 class Players {
   constructor() {
@@ -7,7 +8,7 @@ class Players {
 
   async addPlayer(hostId, playerId, name, gameData) {
     const player = { hostId, playerId, name, gameData };
-    console.log("adding player", player);
+    appLogger.info("adding player", player);
     return await this.model.create(player);
   }
 

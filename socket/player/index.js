@@ -1,3 +1,4 @@
+const { appLogger } = require("../../logger");
 const { Games } = require("../../services/games");
 const { Players } = require("../../services/players");
 const playerJoinHandler = require("./handlers/playerJoin");
@@ -7,7 +8,7 @@ const games = new Games();
 const players = new Players();
 
 const registerPlayerHandlers = (socket, io) => {
-  console.log("register player.players", players);
+  appLogger.info("register player.players", players);
   socket.on("player-join", (params) =>
     playerJoinHandler(socket, io, params, games, players),
   );

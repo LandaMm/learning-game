@@ -26,7 +26,6 @@ io.on("connection", (socket) => {
     ioLogger.info(`socket with "${socket.id}" id disconnected`);
   });
   socket.on("*", (packet) => {
-    console.log("PACKET RECEIVE", packet);
     const [eventName, eventData] = packet.data;
     ioLogger.info(
       `event "${eventName}" with ${JSON.stringify(eventData)} data from "${

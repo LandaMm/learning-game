@@ -1,3 +1,4 @@
+const { appLogger } = require("../logger");
 const { Games } = require("../services/games");
 const { Players } = require("../services/players");
 const Quizes = require("../services/quiz");
@@ -46,7 +47,7 @@ const fetchGameDataById = async (id) => {
 const handleHostDisconnect = async (game, io, socket) => {
   if (!game.gameLive) {
     games.removeGame(game.hostId);
-    console.log("Game ended with pin:", game.pin);
+    appLogger.info("Game ended with pin:", game.pin);
 
     const playersToRemove = await players.getPlayers(game.hostId);
     playersToRemove.forEach((p) => players.removePlayer(p.playerId));
