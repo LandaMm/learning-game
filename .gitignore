@@ -26,3 +26,6 @@ yarn-error.log*
 
 
 .env.test
+
+# ignore logs folder
+logs/
