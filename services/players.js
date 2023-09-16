@@ -22,6 +22,10 @@ class Players {
   async getPlayers(hostId) {
     return await this.model.find({ hostId }).exec();
   }
+
+  async removePlayersByHostId(hostId) {
+    return await this.model.deleteMany({ hostId }).exec();
+  }
 }
 
 module.exports = { Players };
