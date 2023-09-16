@@ -1,10 +1,12 @@
 const winston = require("winston");
 
-const customFormat = winston.format.printf(
-  ({ level, message, label, timestamp }) => {
-    return `${timestamp} [${label}] ${level}: ${message}`;
-  },
-);
+const customFormat = winston.format.printf((info) => {
+  const { level, message, label, timestamp, ...meta } = info;
+  const splat = meta[Symbol.for("splat")];
+  return `${timestamp} [${label}] ${level}: ${message} ${
+    splat ? JSON.stringify(splat) : ""
+  }`;
+});
 
 const loggerConfiguration = (label = "custom") => ({
   level: "info",
@@ -13,10 +15,9 @@ const loggerConfiguration = (label = "custom") => ({
     winston.format.label({ label: label }),
     customFormat,
   ),
-  expressFormat: true,
+  meta: true,
   colorize: true,
   transports: [
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
     new winston.transports.File({
       filename: `logs/${label.replace(/\s+/gi, "_")}.log`,
     }),
