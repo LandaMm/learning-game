@@ -10,6 +10,8 @@ const initializeSocketHandlers = require("./socket/socketHandlers");
 const cors = require("cors");
 const { appLogger, ioLogger } = require("./logger");
 
+const adminRouter = require("./admin/router");
+
 require("dotenv").config();
 
 const publicPath = path.join(__dirname, "/public");
@@ -50,6 +52,8 @@ io.on("connection", (socket) => {
 app.use(express.static(publicPath));
 
 app.use(cors());
+
+app.use("/admin", adminRouter);
 
 initializeSocketHandlers(io);
 
