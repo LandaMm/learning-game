@@ -26,6 +26,7 @@ const loggerConfiguration = (label = "custom") => ({
 
 const appLogger = winston.createLogger(loggerConfiguration("app"));
 const ioLogger = winston.createLogger(loggerConfiguration("socket.io"));
+const adminLogger = winston.createLogger(loggerConfiguration("admin"));
 
 //
 // If we're not in production then log to the `console` with the format:
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV !== "production") {
   [
     [appLogger, "app"],
     [ioLogger, "socket.io"],
+    [adminLogger, "admin"],
   ].map(([logger, label]) =>
     logger.add(
       new winston.transports.Console({
@@ -51,6 +53,7 @@ if (process.env.NODE_ENV !== "production") {
 
 module.exports = {
   loggerConfiguration,
+  adminLogger,
   appLogger,
   ioLogger,
 };
