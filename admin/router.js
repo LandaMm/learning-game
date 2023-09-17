@@ -1,9 +1,13 @@
 const { Router } = require("express");
 const { adminLogger } = require("../logger");
 
+const { Games } = require("../services/games");
+
 const jwt = require("jsonwebtoken");
 
 const adminRouter = Router();
+
+const games = new Games();
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -92,9 +96,9 @@ adminRouter.post("/login", (req, res) => {
   });
 });
 
-adminRouter.get("/games", (req, res) => {
-  // TODO: get games from db and return
-  res.status(200).json([]);
+adminRouter.get("/games", async (req, res) => {
+  const gameList = await games.findAll();
+  res.status(200).json(gameList);
 });
 
 module.exports = adminRouter;
