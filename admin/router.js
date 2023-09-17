@@ -18,6 +18,43 @@ adminRouter.use((req, res, next) => {
       `authenticated with "${req.headers["authorization"]}" token`,
     );
   }
+
+  if (req.path !== "/login") {
+    const authToken = req.headers["authorization"].slice(7);
+    if (!authToken)
+      return res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorized",
+      });
+
+    try {
+      const payload = jwt.verify(authToken, ADMIN_TOKEN_SECRET, {
+        algorithms: "HS256",
+      });
+
+      if (!payload)
+        return res.status(401).json({
+          statusCode: 401,
+          message: "Unauthorized",
+        });
+
+      adminLogger.info("verified token with payload:", payload);
+
+      const { username, password } = payload;
+
+      if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD)
+        return res.status(401).json({
+          statusCode: 401,
+          message: "Unauthorized",
+        });
+    } catch (err) {
+      return res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorized",
+      });
+    }
+  }
+
   next();
 });
 
@@ -53,6 +90,11 @@ adminRouter.post("/login", (req, res) => {
     payload: body,
     token,
   });
+});
+
+adminRouter.get("/games", (req, res) => {
+  // TODO: get games from db and return
+  res.status(200).json([]);
 });
 
 module.exports = adminRouter;
