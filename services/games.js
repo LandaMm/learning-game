@@ -11,8 +11,8 @@ class Games {
     return game;
   }
 
-  async findAll() {
-    return await this.model.find({}).exec();
+  async findAll(filter = {}) {
+    return await this.model.find(filter).exec();
   }
 
   async removeGame(hostId) {
