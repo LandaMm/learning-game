@@ -20,3 +20,5 @@ adminRouter.post("/login", (req, res) => {
     payload: body,
   });
 });
+
+module.exports = adminRouter;
