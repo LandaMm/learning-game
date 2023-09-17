@@ -2,6 +2,8 @@
 const startGameHandler = async (socket, games) => {
   var game = await games.getGame(socket.id); //Get the game based on socket.id
   game.gameLive = true;
+  game.markModified("gameLive");
+  await game.save();
   socket.emit("gameStarted", game.hostId); //Tell player and host that game has started
 };
 
