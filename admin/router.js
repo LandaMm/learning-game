@@ -99,7 +99,7 @@ adminRouter.post("/login", (req, res) => {
 });
 
 adminRouter.get("/games", async (req, res) => {
-  const gameList = await games.findAll({ gameLive: true });
+  const gameList = await games.findAll({});
   const gameWithPlayers = await Promise.all(
     gameList.map(async (game) => {
       const playersInGame = await players.getPlayers(game.hostId);
