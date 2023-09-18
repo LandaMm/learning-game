@@ -30,9 +30,9 @@ io.on("connection", (socket) => {
   socket.on("*", (packet) => {
     const [eventName, eventData] = packet.data;
     ioLogger.info(
-      `event "${eventName}" with ${JSON.stringify(eventData)} data from "${
-        socket.id
-      }" socket`,
+      `event "${eventName}" with ${
+        eventData ? JSON.stringify(eventData) : "no"
+      } data from "${socket.id}" socket`,
     );
   });
   let _emit = socket.emit;
@@ -42,9 +42,9 @@ io.on("connection", (socket) => {
     _emit.apply(socket, args);
     let { 0: eventName, 1: eventData } = args;
     ioLogger.info(
-      `emit "${eventName}" event with ${JSON.stringify(eventData)} data to "${
-        socket.id
-      }" socket`,
+      `emit "${eventName}" event with ${
+        eventData ? JSON.stringify(eventData) : "no"
+      } data to "${socket.id}" socket`,
     );
   };
 });
