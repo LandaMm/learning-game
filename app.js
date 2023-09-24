@@ -11,6 +11,7 @@ const cors = require("cors");
 const { appLogger, ioLogger } = require("./logger");
 
 const adminRouter = require("./admin/router");
+const teacherRouter = require("./teacher/router");
 
 require("dotenv").config();
 
@@ -57,6 +58,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use("/admin", adminRouter);
+app.use("/teacher", teacherRouter);
 
 initializeSocketHandlers(io);
 
