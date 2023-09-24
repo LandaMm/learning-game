@@ -1,6 +1,7 @@
 const Teacher = require("../DB/models/teacher");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { appLogger } = require("../logger");
 
 const TEACHER_TOKEN_SECRET = process.env.TEACHER_TOKEN_SECRET;
 
@@ -33,8 +34,15 @@ class Teachers {
       algorithm: "HS256",
       expiresIn: "1d",
     });
+    appLogger.info("generated tokens for teacher", {
+      accessToken,
+      refreshToken,
+    });
     const salt = await bcrypt.genSalt(10);
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    appLogger.info("hashed refresh token", hashedRefreshToken);
+    user.refreshToken = refreshToken;
+    await user.save();
     return {
       accessToken,
       refreshToken: hashedRefreshToken,
