@@ -19,7 +19,7 @@ class Teachers {
     if (!user) throw new Error("User with given email is not found.");
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error("Bad credentials.");
-    return user.toJSON();
+    return user;
   }
 
   async getTokens(user) {
@@ -47,6 +47,10 @@ class Teachers {
       accessToken,
       refreshToken: hashedRefreshToken,
     };
+  }
+
+  async findByEmail(email) {
+    return await this.model.findOne({ email }).exec();
   }
 }
 
