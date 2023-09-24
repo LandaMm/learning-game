@@ -16,6 +16,10 @@ class Quizes {
   async getAllQuizes() {
     return await this.model.find({}).exec();
   }
+
+  async getTeacherQuizes(teacherId) {
+    return await this.model.find({ createdBy: teacherId }).exec();
+  }
 }
 
 module.exports = Quizes;
