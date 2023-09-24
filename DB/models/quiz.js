@@ -12,7 +12,7 @@ const QuizSchema = new mongoose.Schema({
    * }
    */
   questions: Array,
-  createdBy: { ref: Teacher, type: Teacher },
+  createdBy: { ref: Teacher, type: mongoose.Types.ObjectId },
 });
 
 const Quiz = mongoose.model("quiz", QuizSchema);
