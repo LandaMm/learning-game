@@ -112,8 +112,8 @@ teacherRouter.post("/refresh", async (req, res) => {
       });
     }
 
-    const user = await teachers.findByEmail(email);
-    if (!user) {
+    const user = await teachers.findByEmail(email, true);
+    if (!user || user.refreshToken !== decoded) {
       return res.status(401).json({
         statusCode: 401,
         message: "Invalid session",
@@ -129,6 +129,10 @@ teacherRouter.post("/refresh", async (req, res) => {
       message: "Invalid refresh token",
     });
   }
+});
+
+teacherRouter.get("/profile", teacherAuthGuard, async (req, res) => {
+  res.status(200).json(req.user);
 });
 
 teacherRouter.get("/quizes", teacherAuthGuard, async (req, res) => {
