@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const TeacherSchema = new mongoose.Schema(
   {
-    firstName: String,
-    lastName: String,
+    fullName: String,
     email: String,
     password: { type: String, select: false },
     refreshToken: { type: String, default: null, select: false },

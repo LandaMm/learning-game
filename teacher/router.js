@@ -143,9 +143,9 @@ teacherRouter.post("/register", async (req, res) => {
       message: "Body is required",
     });
 
-  const { firstName, lastName, email, password } = body;
+  const { fullName, email, password } = body;
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!fullName || !email || !password) {
     return res.status(400).json({
       statusCode: 400,
       message: "Missing required fields",
@@ -153,8 +153,7 @@ teacherRouter.post("/register", async (req, res) => {
   }
 
   const user = await teachers.register({
-    firstName,
-    lastName,
+    fullName,
     email,
     password,
   });
