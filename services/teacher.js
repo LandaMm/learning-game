@@ -11,7 +11,12 @@ class Teachers {
   }
 
   async register(data) {
-    return await this.model.create(data);
+    const salts = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(data.password, salts);
+    return await this.model.create({
+      ...data,
+      password: hashedPassword,
+    });
   }
 
   async validate(email, password) {
