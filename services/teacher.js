@@ -22,6 +22,14 @@ class Teachers {
     return user;
   }
 
+  encodeRefreshToken(content) {
+    return Buffer.from(content).toString("base64");
+  }
+
+  decodeRefreshToken(token) {
+    return Buffer.from(token, "base64").toString("utf-8");
+  }
+
   async getTokens(user) {
     const payload = {
       sub: user.email,
@@ -38,8 +46,7 @@ class Teachers {
       accessToken,
       refreshToken,
     });
-    const salt = await bcrypt.genSalt(10);
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    const hashedRefreshToken = this.encodeRefreshToken(refreshToken);
     appLogger.info("hashed refresh token", hashedRefreshToken);
     user.refreshToken = refreshToken;
     await user.save();
