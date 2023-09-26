@@ -135,6 +135,35 @@ teacherRouter.get("/profile", teacherAuthGuard, async (req, res) => {
   res.status(200).json(req.user);
 });
 
+teacherRouter.post("/register", async (req, res) => {
+  const body = req.body;
+  if (!body)
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Body is required",
+    });
+
+  const { firstName, lastName, email, password } = body;
+
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Missing required fields",
+    });
+  }
+
+  const user = await teachers.register({
+    firstName,
+    lastName,
+    email,
+    password,
+  });
+
+  const tokens = await teachers.getTokens(user);
+
+  res.status(201).json(tokens);
+});
+
 teacherRouter.get("/quizes", teacherAuthGuard, async (req, res) => {
   appLogger.info("getting quizes for user", req.user);
   const userQuizes = await quizes.getTeacherQuizes(req.user._id);
