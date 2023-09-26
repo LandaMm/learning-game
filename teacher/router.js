@@ -89,7 +89,7 @@ teacherRouter.post("/login", async (req, res) => {
 });
 
 teacherRouter.get("/quizes", teacherAuthGuard, async (req, res) => {
-  appLogger("getting quizes for user", req.user);
+  appLogger.info("getting quizes for user", req.user);
   const userQuizes = await quizes.getTeacherQuizes(req.user._id);
   res.status(200).json(userQuizes);
 });
