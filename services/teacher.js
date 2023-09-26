@@ -15,7 +15,7 @@ class Teachers {
   }
 
   async validate(email, password) {
-    const user = await this.model.findOne({ email }).exec();
+    const user = await this.model.findOne({ email }).select("+password").exec();
     if (!user) throw new Error("User with given email is not found.");
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error("Bad credentials.");
@@ -56,8 +56,12 @@ class Teachers {
     };
   }
 
-  async findByEmail(email) {
-    return await this.model.findOne({ email }).exec();
+  async findByEmail(email, selectToken) {
+    const query = this.model.findOne({ email });
+    if (selectToken) {
+      query.select("+refreshToken");
+    }
+    return query.exec();
   }
 }
 
