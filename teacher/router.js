@@ -89,7 +89,7 @@ teacherRouter.post("/login", async (req, res) => {
 });
 
 teacherRouter.post("/refresh", async (req, res) => {
-  const refreshToken = req.headers["authorization"];
+  const refreshToken = req.headers["authorization"].slice(7);
   if (!refreshToken) {
     return res.status(400).json({
       statusCode: 400,
