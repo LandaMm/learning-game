@@ -68,6 +68,20 @@ class Teachers {
     }
     return query.exec();
   }
+
+  async findByAccessToken(token) {
+    try {
+      const payload = await jwt.verify(token, TEACHER_TOKEN_SECRET);
+
+      if (payload.sub) {
+        return await this.findByEmail(payload.sub);
+      }
+
+      return null;
+    } catch (err) {
+      return null;
+    }
+  }
 }
 
 module.exports = Teachers;
