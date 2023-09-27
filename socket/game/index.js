@@ -17,7 +17,9 @@ const players = new Players();
 const quizes = new Quizes();
 
 const registerGameHandlers = (socket, io) => {
-  socket.on("requestDbNames", () => requestGamesHandler(socket, quizes));
+  socket.on("requestDbNames", (filter) =>
+    requestGamesHandler(socket, quizes, filter),
+  );
   socket.on("disconnect", () =>
     gameDisconnectHandler(socket, io, games, players),
   );
