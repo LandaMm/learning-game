@@ -13,7 +13,12 @@ module.exports = (io) => {
     const auth = socket.handshake.auth;
 
     if (auth?.token) {
+      appLogger.info("getting teacher by access token", auth.token);
       const teacher = await teachers.findByAccessToken(auth.token);
+      if (!teacher) {
+        socket.disconnect(true);
+        return;
+      }
       teacher.socketId = socket.id;
       await teacher.save();
     }
