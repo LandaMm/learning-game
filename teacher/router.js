@@ -8,6 +8,8 @@ const TEACHER_TOKEN_SECRET = process.env.TEACHER_TOKEN_SECRET;
 const Teachers = require("../services/teacher");
 const Quizes = require("../services/quiz");
 
+const utilities = require("../socket/utilities");
+
 const teachers = new Teachers();
 const quizes = new Quizes();
 
@@ -167,6 +169,31 @@ teacherRouter.get("/quizes", teacherAuthGuard, async (req, res) => {
   appLogger.info("getting quizes for user", req.user);
   const userQuizes = await quizes.getTeacherQuizes(req.user._id);
   res.status(200).json(userQuizes);
+});
+
+teacherRouter.post("/quizes", teacherAuthGuard, async (req, res) => {
+  appLogger.info("creating new quiz for teacher", req.user, req.body);
+  const body = req.body;
+  if (!body) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Body is required",
+    });
+  }
+
+  const user = req.user;
+
+  try {
+    // Inserting the new game data
+    const game = await utilities.insertNewQuizz(body, user);
+
+    // socket.emit("startGameFromCreator", game._id);
+
+    res.status(201).json(game);
+  } catch (err) {
+    console.error("Error in newQuiz function:", err);
+    // socket.emit("error", "An error occurred during the newQuiz operation.");
+  }
 });
 
 module.exports = teacherRouter;
