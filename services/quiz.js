@@ -36,6 +36,18 @@ class Quizes {
       .where({ createdBy: user })
       .exec();
   }
+
+  async removeQuiz(teachers, quizId, token) {
+    const user = await teachers.findByAccessToken(token);
+    if (!user) {
+      return;
+    }
+
+    return await this.model
+      .findByIdAndRemove(quizId)
+      .where({ createdBy: user })
+      .exec();
+  }
 }
 
 module.exports = Quizes;
