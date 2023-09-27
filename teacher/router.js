@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 
 const TEACHER_TOKEN_SECRET = process.env.TEACHER_TOKEN_SECRET;
 
+const { IO } = require("../io");
+
 const Teachers = require("../services/teacher");
 const Quizes = require("../services/quiz");
 
@@ -187,12 +189,17 @@ teacherRouter.post("/quizes", teacherAuthGuard, async (req, res) => {
     // Inserting the new game data
     const game = await utilities.insertNewQuizz(body, user);
 
-    // socket.emit("startGameFromCreator", game._id);
+    if (typeof user.socketId === "string") {
+      IO.to(user.socketId).emit("startGameFromCreator", game._id);
+    }
 
     res.status(201).json(game);
   } catch (err) {
     console.error("Error in newQuiz function:", err);
-    // socket.emit("error", "An error occurred during the newQuiz operation.");
+    res.status(500).json({
+      statusCode: 500,
+      message: "An error occurred while trying to create a quiz",
+    });
   }
 });
 
