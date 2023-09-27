@@ -3,10 +3,8 @@ const { ioLogger } = require("./logger");
 
 const ioMiddleware = require("socketio-wildcard")();
 
-let IO = null;
-
 const registerIO = (httpServer, cb) => {
-  IO = socketIO(httpServer);
+  const IO = socketIO(httpServer);
 
   IO.use(ioMiddleware);
 
@@ -40,4 +38,4 @@ const registerIO = (httpServer, cb) => {
   cb(IO);
 };
 
-module.exports = { IO, registerIO };
+module.exports = { registerIO };

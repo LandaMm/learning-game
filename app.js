@@ -31,6 +31,7 @@ app.use("/teacher", teacherRouter);
 
 registerIO(server, (io) => {
   initializeSocketHandlers(io);
+  app.locals.io = io;
 });
 
 connectDB().then(() => {
