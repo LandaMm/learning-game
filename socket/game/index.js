@@ -12,6 +12,7 @@ const startGameHandler = require("./handlers/startGame");
 const newQuizHandler = require("./handlers/newQuiz");
 const Quizes = require("../../services/quiz");
 const Teachers = require("../../services/teacher");
+const removeQuizHandler = require("./handlers/removeQuiz");
 
 const games = new Games();
 const players = new Players();
@@ -22,6 +23,9 @@ const registerGameHandlers = (socket, io) => {
   socket.on("requestDbNames", (filter) =>
     requestGamesHandler(socket, quizes, teachers, filter),
   );
+  socket.on("removeQuiz", (quizId) => {
+    removeQuizHandler(socket, quizes, teachers, quizId);
+  });
   socket.on("disconnect", () =>
     gameDisconnectHandler(socket, io, games, players),
   );
