@@ -11,7 +11,12 @@ class Quizes {
   }
 
   async findById(id, creator) {
-    return await this.model.findById(id).where({ createdBy: creator }).exec();
+    const query = this.model.findById(id);
+    if (creator) {
+      query.where({ createdBy: creator });
+    }
+
+    return await query.exec();
   }
 
   async getAllQuizes(teachers, filter, token) {
@@ -30,11 +35,21 @@ class Quizes {
     return await this.model.find({ createdBy: teacherId }).exec();
   }
 
+  async adminUpdateQuiz(quizId, name, questions) {
+    return await this.model
+      .findByIdAndUpdate(quizId, { name, questions }, { new: true })
+      .exec();
+  }
+
   async updateQuiz(user, quizId, name, questions) {
     return await this.model
       .findByIdAndUpdate(quizId, { name, questions }, { new: true })
       .where({ createdBy: user })
       .exec();
+  }
+
+  async adminRemoveQuiz(quizId) {
+    return await this.model.findByIdAndRemove(quizId).exec();
   }
 
   async removeQuiz(teachers, quizId, token) {
