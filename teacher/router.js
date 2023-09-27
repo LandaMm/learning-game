@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const TEACHER_TOKEN_SECRET = process.env.TEACHER_TOKEN_SECRET;
 
-const { IO } = require("../io");
-
 const Teachers = require("../services/teacher");
 const Quizes = require("../services/quiz");
 
@@ -190,7 +188,9 @@ teacherRouter.post("/quizes", teacherAuthGuard, async (req, res) => {
     const game = await utilities.insertNewQuizz(body, user);
 
     if (typeof user.socketId === "string") {
-      IO.to(user.socketId).emit("startGameFromCreator", game._id);
+      req.app.locals.io
+        .to(user.socketId)
+        .emit("startGameFromCreator", game._id);
     }
 
     res.status(201).json(game);
