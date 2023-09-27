@@ -7,12 +7,13 @@ const players = new Players();
 const quizes = new Quizes();
 
 // Insert a new game
-const insertNewQuizz = async (gameData) => {
+const insertNewQuizz = async (gameData, creator) => {
   if (!gameData.name || !gameData.questions?.length) return null;
   try {
     return await quizes.addQuiz({
       name: gameData.name,
       questions: gameData.questions,
+      createdBy: creator,
     });
   } catch (err) {
     console.error("Error inserting new game data:", err);
