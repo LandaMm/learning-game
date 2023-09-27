@@ -1,9 +1,14 @@
 const { appLogger } = require("../../../logger");
 
-const requestGamesHandler = async (socket, quizes, filter) => {
+const requestGamesHandler = async (socket, quizes, teachers, filter) => {
   try {
-    appLogger.info("get quizes with filter for socket", filter, socket.auth);
-    const gamesList = await quizes.getAllQuizes();
+    appLogger.info(
+      "get quizes with filter for socket",
+      filter,
+      socket.handshake.auth,
+    );
+    const token = socket.handshake.auth?.token;
+    const gamesList = await quizes.getAllQuizes(teachers, filter, token);
     appLogger.info("gamesList", gamesList);
     socket.emit("gameNamesData", gamesList);
   } catch (err) {
