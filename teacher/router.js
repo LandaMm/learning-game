@@ -115,6 +115,7 @@ teacherRouter.post("/refresh", async (req, res) => {
     }
 
     const user = await teachers.findByEmail(email, true);
+    appLogger.info("checking user refresh tokens", user.refreshToken, decoded);
     if (!user || user.refreshToken !== decoded) {
       return res.status(401).json({
         statusCode: 401,
