@@ -6,6 +6,7 @@ const { appLogger } = require("../logger");
 module.exports = (io) => {
   io.on("connection", (socket) => {
     appLogger.info("socket connected with handshake", socket.handshake.auth);
+
     // host
     registerHostHandlers(socket, io);
 
