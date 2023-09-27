@@ -138,6 +138,14 @@ teacherRouter.get("/profile", teacherAuthGuard, async (req, res) => {
   res.status(200).json(req.user);
 });
 
+teacherRouter.get("/quizes/:id", teacherAuthGuard, async (req, res) => {
+  const quizId = req.params.id;
+
+  const quiz = await quizes.findById(quizId, req.user);
+
+  res.status(200).json(quiz);
+});
+
 teacherRouter.post("/register", async (req, res) => {
   const body = req.body;
   if (!body)
@@ -200,6 +208,49 @@ teacherRouter.post("/quizes", teacherAuthGuard, async (req, res) => {
     res.status(500).json({
       statusCode: 500,
       message: "An error occurred while trying to create a quiz",
+    });
+  }
+});
+
+teacherRouter.put("/quizes/:id", teacherAuthGuard, async (req, res) => {
+  const quizID = req.params.id;
+
+  appLogger.info("updating quiz for teacher", req.user, req.body);
+  const body = req.body;
+  if (!body) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Body is required",
+    });
+  }
+
+  if (!body.name || !body.questions || !body.questions?.length) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Missing required fields.",
+    });
+  }
+
+  const { name, questions } = body;
+
+  const user = req.user;
+
+  try {
+    // Inserting the new game data
+    const game = await quizes.updateQuiz(req.user, quizID, name, questions);
+
+    if (typeof user.socketId === "string") {
+      req.app.locals.io
+        .to(user.socketId)
+        .emit("startGameFromCreator", game._id);
+    }
+
+    res.status(200).json(game);
+  } catch (err) {
+    appLogger.error("Error in update quiz function:", err);
+    res.status(500).json({
+      statusCode: 500,
+      message: "An error occurred while trying to update a quiz",
     });
   }
 });
