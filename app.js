@@ -2,13 +2,12 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 
-const socketIO = require("socket.io");
-const ioMiddleware = require("socketio-wildcard")();
+const { registerIO } = require("./io");
 
 const connectDB = require("./DB/dbConnect");
 const initializeSocketHandlers = require("./socket/socketHandlers");
 const cors = require("cors");
-const { appLogger, ioLogger } = require("./logger");
+const { appLogger } = require("./logger");
 
 const adminRouter = require("./admin/router");
 const teacherRouter = require("./teacher/router");
@@ -19,36 +18,6 @@ const publicPath = path.join(__dirname, "/public");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
-
-io.use(ioMiddleware);
-
-io.on("connection", (socket) => {
-  ioLogger.info(`socket with "${socket.id}" id connected`);
-  socket.on("disconnect", () => {
-    ioLogger.info(`socket with "${socket.id}" id disconnected`);
-  });
-  socket.on("*", (packet) => {
-    const [eventName, eventData] = packet.data;
-    ioLogger.info(
-      `event "${eventName}" with ${
-        eventData ? JSON.stringify(eventData) : "no"
-      } data from "${socket.id}" socket`,
-    );
-  });
-  let _emit = socket.emit;
-
-  // decorate emit function
-  socket.emit = (...args) => {
-    _emit.apply(socket, args);
-    let { 0: eventName, 1: eventData } = args;
-    ioLogger.info(
-      `emit "${eventName}" event with ${
-        eventData ? JSON.stringify(eventData) : "no"
-      } data to "${socket.id}" socket`,
-    );
-  };
-});
 
 app.use(express.static(publicPath));
 
@@ -60,7 +29,9 @@ app.use(cors());
 app.use("/admin", adminRouter);
 app.use("/teacher", teacherRouter);
 
-initializeSocketHandlers(io);
+registerIO(server, (io) => {
+  initializeSocketHandlers(io);
+});
 
 connectDB().then(() => {
   server.listen(process.env.PORT, () => {
