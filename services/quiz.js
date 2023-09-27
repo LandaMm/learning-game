@@ -10,8 +10,8 @@ class Quizes {
     return await this.model.create(data);
   }
 
-  async findById(id) {
-    return await this.model.findById(id).exec();
+  async findById(id, creator) {
+    return await this.model.findById(id).where({ createdBy: creator }).exec();
   }
 
   async getAllQuizes(teachers, filter, token) {
@@ -28,6 +28,13 @@ class Quizes {
 
   async getTeacherQuizes(teacherId) {
     return await this.model.find({ createdBy: teacherId }).exec();
+  }
+
+  async updateQuiz(user, quizId, name, questions) {
+    return await this.model
+      .findByIdAndUpdate(quizId, { name, questions }, { new: true })
+      .where({ createdBy: user })
+      .exec();
   }
 }
 
