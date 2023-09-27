@@ -5,11 +5,13 @@ const { Games } = require("../services/games");
 const { Players } = require("../services/players");
 
 const jwt = require("jsonwebtoken");
+const Quizes = require("../services/quiz");
 
 const adminRouter = Router();
 
 const games = new Games();
 const players = new Players();
+const quizes = new Quizes();
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -111,6 +113,33 @@ adminRouter.get("/games", async (req, res) => {
     }),
   );
   res.status(200).json(gameWithPlayers);
+});
+
+adminRouter.get("/quizes", async (req, res) => {
+  const quizList = await quizes.getAllQuizes("all");
+  res.status(200).json(quizList);
+});
+
+adminRouter.get("/quizes/:id", async (req, res) => {
+  const quiz = await quizes.findById(req.params.id);
+  res.status(200).json(quiz);
+});
+
+adminRouter.delete("/quizes/:id", async (req, res) => {
+  await quizes.adminRemoveQuiz(req.params.id);
+  res.status(200).json({
+    statusCode: 200,
+    message: "Quiz deleted.",
+  });
+});
+
+adminRouter.put("/quizes/:id", async (req, res) => {
+  const updated = await quizes.adminUpdateQuiz(
+    req.params.id,
+    req.body.name,
+    req.body.questions,
+  );
+  res.status(200).json(updated);
 });
 
 module.exports = adminRouter;
