@@ -73,12 +73,15 @@ class Teachers {
     try {
       const payload = await jwt.verify(token, TEACHER_TOKEN_SECRET);
 
+      appLogger.info("verified access token with payload", payload);
+
       if (payload.sub) {
         return await this.findByEmail(payload.sub);
       }
 
       return null;
     } catch (err) {
+      appLogger.info("failed to verify token", err);
       return null;
     }
   }
