@@ -41,7 +41,7 @@ class Teachers {
     };
     const accessToken = jwt.sign(payload, TEACHER_TOKEN_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1h",
+      expiresIn: "1m",
     });
     const refreshToken = jwt.sign(payload, TEACHER_TOKEN_SECRET, {
       algorithm: "HS256",
