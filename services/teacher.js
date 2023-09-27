@@ -41,11 +41,11 @@ class Teachers {
     };
     const accessToken = jwt.sign(payload, TEACHER_TOKEN_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1m",
+      expiresIn: "1d",
     });
     const refreshToken = jwt.sign(payload, TEACHER_TOKEN_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1d",
+      expiresIn: "5d",
     });
     appLogger.info("generated tokens for teacher", {
       accessToken,
