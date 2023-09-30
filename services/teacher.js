@@ -85,6 +85,14 @@ class Teachers {
       return null;
     }
   }
+
+  async findById(id) {
+    return await this.model.findById(id).exec();
+  }
+
+  async getAll() {
+    return await this.model.find({}).exec();
+  }
 }
 
 module.exports = Teachers;
