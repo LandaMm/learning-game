@@ -3,6 +3,7 @@ const { adminLogger } = require("../logger");
 
 const { Games } = require("../services/games");
 const { Players } = require("../services/players");
+const Teachers = require("../services/teacher");
 
 const jwt = require("jsonwebtoken");
 const Quizes = require("../services/quiz");
@@ -12,6 +13,7 @@ const adminRouter = Router();
 const games = new Games();
 const players = new Players();
 const quizes = new Quizes();
+const teachers = new Teachers();
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -100,8 +102,20 @@ adminRouter.post("/login", (req, res) => {
   });
 });
 
+adminRouter.get("/teachers", async (req, res) => {
+  const records = await teachers.getAll();
+  res.status(200).json(records);
+});
+
 adminRouter.get("/games", async (req, res) => {
-  const gameList = await games.findAll({});
+  const teacherFilter = req.query.teacher;
+  const gameQuery = {};
+  if (teacherFilter) {
+    const teacher = await teachers.findById(teacherFilter);
+    adminLogger.info("got teacher filter", teacher.toJSON());
+    gameQuery.createdBy = teacher;
+  }
+  const gameList = await games.findAll(gameQuery);
   const gameWithPlayers = await Promise.all(
     gameList.map(async (game) => {
       const playersInGame = await players.getPlayers(game.hostId);
