@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const Quiz = require("./quiz");
-const Game = require("./game");
 
 // Define the GameStats schema
 const GameStatsSchema = new mongoose.Schema({
-  gameId: { type: mongoose.Types.ObjectId, ref: Game }, // Reference to the game
+  gameId: { type: mongoose.Types.ObjectId, ref: "game" }, // Reference to the game
   quizId: { type: mongoose.Types.ObjectId, ref: Quiz },
   questionStats: [
     {
