@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const GameStats = require("./gameStats"); // Import the statistics model
+const Teacher = require("./teacher");
 
 // Define the Game schema
 const GameSchema = new mongoose.Schema({
@@ -8,6 +9,7 @@ const GameSchema = new mongoose.Schema({
   gameLive: Boolean,
   gameData: Object,
   gameStats: { type: mongoose.Types.ObjectId, ref: GameStats }, // Reference to the statistics
+  createdBy: { type: mongoose.Types.ObjectId, ref: Teacher },
 });
 
 // Create the Game model
