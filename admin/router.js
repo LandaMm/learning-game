@@ -4,6 +4,7 @@ const { adminLogger } = require("../logger");
 const { Games } = require("../services/games");
 const { Players } = require("../services/players");
 const Teachers = require("../services/teacher");
+const GameStatsService = require("../services/gameStats");
 
 const jwt = require("jsonwebtoken");
 const Quizes = require("../services/quiz");
@@ -14,6 +15,7 @@ const games = new Games();
 const players = new Players();
 const quizes = new Quizes();
 const teachers = new Teachers();
+const gameStats = new GameStatsService();
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -162,6 +164,32 @@ adminRouter.delete("/games/:id", async (req, res) => {
   res.status(200).json({
     statusCode: 200,
     message: "Game deleted successfully!",
+  });
+});
+
+adminRouter.get("/games/:id", async (req, res) => {
+  const gameId = req.params.id;
+  const easiestQuestions = await gameStats.findGameHardestQuestions(gameId);
+  const hardestQuestions = await gameStats.findGameHardestQuestions(gameId);
+  const mostNoAnswerQuestions =
+    await gameStats.findGameMostMissAnsweredQuestions(gameId);
+  res.status(200).json({
+    easiest: easiestQuestions,
+    hardest: hardestQuestions,
+    mostNoAnswer: mostNoAnswerQuestions,
+  });
+});
+
+adminRouter.get("/quizes/:id", async (req, res) => {
+  const quizId = req.params.id;
+  const easiestQuestions = await gameStats.findQuizEasiestQuestions(quizId);
+  const hardestQuestions = await gameStats.findQuizHardestQuestions(quizId);
+  const mostNoAnswerQuestions =
+    await gameStats.findGameMostMissAnsweredQuestions(quizId);
+  res.status(200).json({
+    easiest: easiestQuestions,
+    hardest: hardestQuestions,
+    mostNoAnswer: mostNoAnswerQuestions,
   });
 });
 
