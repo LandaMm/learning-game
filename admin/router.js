@@ -156,4 +156,13 @@ adminRouter.put("/quizes/:id", async (req, res) => {
   res.status(200).json(updated);
 });
 
+adminRouter.delete("/games/:id", async (req, res) => {
+  const gameId = req.params.id;
+  await games.removeById(gameId);
+  res.status(200).json({
+    statusCode: 200,
+    message: "Game deleted successfully!",
+  });
+});
+
 module.exports = adminRouter;
