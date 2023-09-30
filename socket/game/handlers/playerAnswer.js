@@ -1,6 +1,7 @@
 const { appLogger } = require("../../../logger");
+const GameStatsService = require("./GameStatsService"); // Импорт класса GameStatsService
 
-// Sets data in player class to answer from player
+// Handles the player's answer to a question
 const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
   appLogger.info("player answer. socket.id", socket.id);
   var player = await players.getPlayer(socket.id);
@@ -11,7 +12,7 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
   appLogger.info("player answer->game", game);
 
   if (game.gameData.questionLive == true) {
-    //if the question is still live
+    // If the question is still live
     player.gameData.answer = num;
     game.gameData.playersAnswered += 1;
 
@@ -29,7 +30,7 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
 
       var correctAnswer = gameData.questions[gameQuestion - 1].correct;
 
-      // Checks player answer with correct answer
+      // Check player's answer with the correct answer
       if (num == correctAnswer) {
         player.gameData.score += 100;
         player.markModified("gameData");
@@ -38,15 +39,25 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
         socket.emit("answerResult", true);
       }
 
-      // Checks if all players answered
+      // Get or create game statistics
+      const gameStats = await GameStatsService.getGameStats(game.id);
+
+      // Update question statistics based on player's answer
+      await GameStatsService.updateQuestionStats(
+        gameStats,
+        gameQuestion,
+        num == correctAnswer,
+      );
+
+      // Check if all players answered
       if (game.gameData.playersAnswered == playerNum.length) {
-        game.gameData.questionLive = false; // Question has been ended bc players all answered under time
+        game.gameData.questionLive = false; // Question has been ended because all players answered under time
         game.markModified("gameData");
         await game.save();
         var playerData = await players.getPlayers(game.hostId);
-        io.to(game.pin).emit("questionOver", playerData, correctAnswer); // Tell everyone that question is over
+        io.to(game.pin).emit("questionOver", playerData, correctAnswer); // Tell everyone that the question is over
       } else {
-        // update host screen of num players answered
+        // Update host screen with the number of players who answered
         io.to(game.pin).emit("updatePlayersAnswered", {
           playersInGame: playerNum.length,
           playersAnswered: game.gameData.playersAnswered,
