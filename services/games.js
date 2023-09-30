@@ -5,8 +5,8 @@ class Games {
     this.model = Game;
   }
 
-  async addGame(pin, hostId, gameLive, gameData) {
-    const game = { pin, hostId, gameLive, gameData };
+  async addGame(pin, hostId, gameLive, gameData, creator) {
+    const game = { pin, hostId, gameLive, gameData, createdBy: creator };
     await this.model.create(game);
     return game;
   }
