@@ -1,5 +1,5 @@
 const { appLogger } = require("../../../logger");
-const GameStatsService = require("./GameStatsService"); // Импорт класса GameStatsService
+const GameStatsService = require("../../../services/gameStats"); // Импорт класса GameStatsService
 
 // Handles the player's answer to a question
 const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
