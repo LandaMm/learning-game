@@ -12,7 +12,7 @@ class Games {
   }
 
   async findAll(filter = {}) {
-    return await this.model.find(filter).exec();
+    return await this.model.find(filter).sort({ createdAt: -1 }).exec();
   }
 
   async removeGame(hostId) {
