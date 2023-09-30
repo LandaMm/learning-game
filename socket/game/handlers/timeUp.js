@@ -21,7 +21,7 @@ const timeUpHandler = async (socket, io, games, players, utilities) => {
     const playersWhoDidNotAnswer = totalPlayers - playersWhoAnswered;
 
     // Get or create game statistics
-    const gameStats = await GameStatsService.getGameStats(game.id);
+    const gameStats = await GameStatsService.getGameStats(game.id, gameData);
 
     // Update question statistics based on players who did not answer
     await GameStatsService.updateQuestionStats(

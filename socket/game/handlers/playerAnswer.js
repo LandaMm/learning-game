@@ -40,7 +40,7 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
       }
 
       // Get or create game statistics
-      const gameStats = await GameStatsService.getGameStats(game.id);
+      const gameStats = await GameStatsService.getGameStats(game.id, gameData);
 
       // Update question statistics based on player's answer
       await GameStatsService.updateQuestionStats(
