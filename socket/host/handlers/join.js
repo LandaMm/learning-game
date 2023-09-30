@@ -1,4 +1,7 @@
 const { appLogger } = require("../../../logger");
+const Teachers = require("../../../services/teacher");
+
+const teachers = new Teachers();
 
 const hostJoinHandler = async (socket, data, games, quizes) => {
   try {
@@ -10,13 +13,21 @@ const hostJoinHandler = async (socket, data, games, quizes) => {
       return;
     }
     if (gameData) {
+      const user = await teachers.findBySocketId(socket.id);
+      appLogger.info("add game finding teacher with socket id", user);
       const gamePin = Math.floor(Math.random() * 90000) + 10000;
-      games.addGame(gamePin, socket.id, false, {
-        playersAnswered: 0,
-        questionLive: false,
-        gameid: data.id,
-        question: 1,
-      });
+      games.addGame(
+        gamePin,
+        socket.id,
+        false,
+        {
+          playersAnswered: 0,
+          questionLive: false,
+          gameid: data.id,
+          question: 1,
+        },
+        user,
+      );
 
       appLogger.info("hostJoin games", games);
 
