@@ -61,9 +61,8 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         num4: leaderboard[3]?.name || "",
         num5: leaderboard[4]?.name || "",
       });
-      // removing all players with game's host ID
-      const result = await players.removePlayersByHostId(game.hostId);
-      appLogger.info("deleted all game's players", result);
+      // const result = await players.removePlayersByHostId(game.hostId);
+      // appLogger.info("deleted all game's players", result);
       const gameFinishResult = await games.finishGame(game.hostId);
       appLogger.info("finished game by host id", gameFinishResult);
     }
