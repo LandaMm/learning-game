@@ -19,6 +19,10 @@ class Games {
     return await this.model.findOneAndDelete({ hostId }).exec();
   }
 
+  async removeById(gameId) {
+    return await this.model.findByIdAndDelete(gameId).exec();
+  }
+
   async finishGame(hostId) {
     return await this.model
       .findOneAndUpdate(
