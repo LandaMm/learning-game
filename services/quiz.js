@@ -28,7 +28,7 @@ class Quizes {
       }
     }
     appLogger.info("getting quizes with filter", query);
-    return await this.model.find(query).exec();
+    return await this.model.find(query).sort({ createdAt: -1 }).exec();
   }
 
   async getTeacherQuizes(teacherId) {
