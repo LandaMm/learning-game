@@ -1,6 +1,10 @@
+const { default: mongoose } = require("mongoose");
 const GameStats = require("../DB/models/gameStats"); // Import the gameStats model
+const { appLogger } = require("../logger");
 const { Games } = require("./games");
 const Quizes = require("./quiz");
+
+const quizes = new Quizes();
 
 class GameStatsService {
   // Function for creating or retrieving game statistics
@@ -52,11 +56,13 @@ class GameStatsService {
     const quizes = new Quizes();
     const quiz = await quizes.findById(game.gameData.gameid);
     const gameStats = await GameStatsService.getGameStats(gameId, quiz);
+    appLogger.info("game stats easiest", gameStats);
     const sorted = gameStats.questionStats.sort(
       (a, b) => b.correctCount - a.correctCount,
     );
+    appLogger.info("sorted", sorted);
     return {
-      questions: sorted.map((q) => quiz.questions[q.questionIndex]),
+      questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
     };
   }
@@ -71,7 +77,7 @@ class GameStatsService {
       (a, b) => b.noAnswerCount - a.noAnswerCount,
     );
     return {
-      questions: sorted.map((q) => quiz.questions[q.questionIndex]),
+      questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
     };
   }
@@ -86,48 +92,86 @@ class GameStatsService {
       (a, b) => b.incorrectCount - a.incorrectCount,
     );
     return {
-      questions: sorted.map((q) => quiz.questions[q.questionIndex]),
+      questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
     };
   }
 
   async findQuizEasiestQuestions(quizId) {
     // Find the easiest question (maximum correct answers)
-    const easiestQuestion = await this.model
-      .aggregate([
-        { $match: { quizId } },
-        { $unwind: "$questionStats" },
-        { $sort: { "questionStats.correctCount": -1 } },
-      ])
-      .exec();
+    const easiestQuestion = await GameStats.aggregate([
+      { $match: { quizId: new mongoose.Types.ObjectId(quizId) } },
+      { $unwind: "$questionStats" },
+      { $project: { questionStats: 1, _id: 1 } },
+      {
+        $group: {
+          _id: "$questionStats.questionIndex",
+          correct: { $sum: "$questionStats.correctCount" },
+          incorrect: { $sum: "$questionStats.incorrectCount" },
+          noAnswer: { $sum: "$questionStats.noAnswerCount" },
+        },
+      },
+      { $sort: { correct: -1 } },
+    ]).exec();
 
-    return easiestQuestion;
+    appLogger.info("easieasQuestions", easiestQuestion);
+
+    const quiz = await quizes.findById(quizId);
+
+    return easiestQuestion.map((q) => ({
+      ...q,
+      title: quiz.questions[q._id - 1].title,
+    }));
   }
 
   async findQuizHardestQuestions(quizId) {
     // Find the hardest question (maximum incorrect answers)
-    const hardestQuestion = await this.model
-      .aggregate([
-        { $match: { quizId } },
-        { $unwind: "$questionStats" },
-        { $sort: { "questionStats.incorrectCount": -1 } },
-      ])
-      .exec();
+    const hardestQuestion = await GameStats.aggregate([
+      { $match: { quizId: new mongoose.Types.ObjectId(quizId) } },
+      { $unwind: "$questionStats" },
+      { $project: { questionStats: 1, _id: 1 } },
+      {
+        $group: {
+          _id: "$questionStats.questionIndex",
+          correct: { $sum: "$questionStats.correctCount" },
+          incorrect: { $sum: "$questionStats.incorrectCount" },
+          noAnswer: { $sum: "$questionStats.noAnswerCount" },
+        },
+      },
+      { $sort: { incorrect: -1 } },
+    ]).exec();
 
-    return hardestQuestion;
+    const quiz = await quizes.findById(quizId);
+
+    return hardestQuestion.map((q) => ({
+      ...q,
+      title: quiz.questions[q._id - 1].title,
+    }));
   }
 
   async findQuizMostNoAnswerQuestions(quizId) {
     // Find the hardest question (maximum incorrect answers)
-    const mostNoAnswerQuestions = await this.model
-      .aggregate([
-        { $match: { quizId } },
-        { $unwind: "$questionStats" },
-        { $sort: { "questionStats.noAnswerCount": -1 } },
-      ])
-      .exec();
+    const mostNoAnswerQuestions = await GameStats.aggregate([
+      { $match: { quizId: new mongoose.Types.ObjectId(quizId) } },
+      { $unwind: "$questionStats" },
+      { $project: { questionStats: 1, _id: 1 } },
+      {
+        $group: {
+          _id: "$questionStats.questionIndex",
+          correct: { $sum: "$questionStats.correctCount" },
+          incorrect: { $sum: "$questionStats.incorrectCount" },
+          noAnswer: { $sum: "$questionStats.noAnswerCount" },
+        },
+      },
+      { $sort: { noAnswer: -1 } },
+    ]).exec();
 
-    return mostNoAnswerQuestions;
+    const quiz = await quizes.findById(quizId);
+
+    return mostNoAnswerQuestions.map((q) => ({
+      ...q,
+      title: quiz.questions[q._id - 1].title,
+    }));
   }
 }
 
