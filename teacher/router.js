@@ -25,7 +25,7 @@ const teacherAuthGuard = async (req, res, next) => {
     );
   }
 
-  const authToken = req.headers["authorization"].slice(7);
+  const authToken = req.headers["authorization"]?.slice(7);
   if (!authToken)
     return res.status(401).json({
       statusCode: 401,
