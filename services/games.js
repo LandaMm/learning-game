@@ -19,6 +19,16 @@ class Games {
     return await this.model.findOneAndDelete({ hostId }).exec();
   }
 
+  async finishGame(hostId) {
+    return await this.model
+      .findOneAndUpdate(
+        { hostId },
+        { $set: { gameFinished: true, gameLive: false } },
+        { new: true },
+      )
+      .exec();
+  }
+
   async getGame(hostId) {
     return await this.model.findOne({ hostId }).exec();
   }

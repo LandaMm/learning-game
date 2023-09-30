@@ -64,8 +64,8 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
       // removing all players with game's host ID
       const result = await players.removePlayersByHostId(game.hostId);
       appLogger.info("deleted all game's players", result);
-      const gameDeleteResult = await games.removeGame(game.hostId);
-      appLogger.info("removed game by host id", gameDeleteResult);
+      const gameFinishResult = await games.finishGame(game.hostId);
+      appLogger.info("finished game by host id", gameFinishResult);
     }
   } catch (err) {
     console.error("Error fetching game data:", err);
