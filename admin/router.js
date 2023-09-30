@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { adminLogger } = require("../logger");
+const { adminLogger, appLogger } = require("../logger");
 
 const { Games } = require("../services/games");
 const { Players } = require("../services/players");
@@ -169,7 +169,8 @@ adminRouter.delete("/games/:id", async (req, res) => {
 
 adminRouter.get("/games/:id", async (req, res) => {
   const gameId = req.params.id;
-  const easiestQuestions = await gameStats.findGameHardestQuestions(gameId);
+  const easiestQuestions = await gameStats.findGameEasiestQuestions(gameId);
+  appLogger.info("easiest questions (router)", easiestQuestions);
   const hardestQuestions = await gameStats.findGameHardestQuestions(gameId);
   const mostNoAnswerQuestions =
     await gameStats.findGameMostMissAnsweredQuestions(gameId);
@@ -180,12 +181,12 @@ adminRouter.get("/games/:id", async (req, res) => {
   });
 });
 
-adminRouter.get("/quizes/:id", async (req, res) => {
+adminRouter.get("/quizes/:id/stats", async (req, res) => {
   const quizId = req.params.id;
   const easiestQuestions = await gameStats.findQuizEasiestQuestions(quizId);
   const hardestQuestions = await gameStats.findQuizHardestQuestions(quizId);
   const mostNoAnswerQuestions =
-    await gameStats.findGameMostMissAnsweredQuestions(quizId);
+    await gameStats.findQuizMostNoAnswerQuestions(quizId);
   res.status(200).json({
     easiest: easiestQuestions,
     hardest: hardestQuestions,
