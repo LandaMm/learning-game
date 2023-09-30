@@ -93,6 +93,10 @@ class Teachers {
   async getAll() {
     return await this.model.find({}).exec();
   }
+
+  async findBySocketId(socketId) {
+    return await this.model.findOne({ socketId }).exec();
+  }
 }
 
 module.exports = Teachers;
