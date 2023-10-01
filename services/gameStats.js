@@ -57,9 +57,21 @@ class GameStatsService {
     const quiz = await quizes.findById(game.gameData.gameid);
     const gameStats = await GameStatsService.getGameStats(gameId, quiz);
     appLogger.info("game stats easiest", gameStats);
-    const sorted = gameStats.questionStats.sort(
-      (a, b) => b.correctCount - a.correctCount,
-    );
+    const grouped = gameStats.questionStats.reduce((res, item) => {
+      const copy = [...res];
+      const index = copy.findIndex(
+        (el) => el.questionIndex === item.questionIndex,
+      );
+      if (index !== -1) {
+        copy[index].correctCount += item.correctCount;
+        copy[index].incorrectCount += item.incorrectCount;
+        copy[index].noAnswerCount += item.noAnswerCount;
+      } else {
+        copy.push(item);
+      }
+      return copy;
+    }, []);
+    const sorted = grouped.sort((a, b) => b.correctCount - a.correctCount);
     appLogger.info("sorted", sorted);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
@@ -73,9 +85,21 @@ class GameStatsService {
     const quizes = new Quizes();
     const quiz = await quizes.findById(game.gameData.gameid);
     const gameStats = await GameStatsService.getGameStats(gameId, quiz);
-    const sorted = gameStats.questionStats.sort(
-      (a, b) => b.noAnswerCount - a.noAnswerCount,
-    );
+    const grouped = gameStats.questionStats.reduce((res, item) => {
+      const copy = [...res];
+      const index = copy.findIndex(
+        (el) => el.questionIndex === item.questionIndex,
+      );
+      if (index !== -1) {
+        copy[index].correctCount += item.correctCount;
+        copy[index].incorrectCount += item.incorrectCount;
+        copy[index].noAnswerCount += item.noAnswerCount;
+      } else {
+        copy.push(item);
+      }
+      return copy;
+    }, []);
+    const sorted = grouped.sort((a, b) => b.noAnswerCount - a.noAnswerCount);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
@@ -88,9 +112,21 @@ class GameStatsService {
     const quizes = new Quizes();
     const quiz = await quizes.findById(game.gameData.gameid);
     const gameStats = await GameStatsService.getGameStats(gameId, quiz);
-    const sorted = gameStats.questionStats.sort(
-      (a, b) => b.incorrectCount - a.incorrectCount,
-    );
+    const grouped = gameStats.questionStats.reduce((res, item) => {
+      const copy = [...res];
+      const index = copy.findIndex(
+        (el) => el.questionIndex === item.questionIndex,
+      );
+      if (index !== -1) {
+        copy[index].correctCount += item.correctCount;
+        copy[index].incorrectCount += item.incorrectCount;
+        copy[index].noAnswerCount += item.noAnswerCount;
+      } else {
+        copy.push(item);
+      }
+      return copy;
+    }, []);
+    const sorted = grouped.sort((a, b) => b.incorrectCount - a.incorrectCount);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
