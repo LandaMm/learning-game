@@ -120,12 +120,13 @@ const emitGameQuestions = async (gameId, hostId, socket) => {
     const gameData = await quizes.findById(gameId);
 
     if (gameData && gameData.questions && gameData.questions.length > 0) {
-      const { question, answers, correct } = gameData.questions[0];
+      appLogger.info("gameData.questions[0]", gameData.questions[0]);
+      const { title, answers, correct } = gameData.questions[0];
 
       const playersInGame = await players.getPlayers(hostId);
 
       socket.emit("gameQuestions", {
-        q1: question,
+        q1: title,
         a1: answers[0],
         a2: answers[1],
         a3: answers[2],
