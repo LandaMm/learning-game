@@ -133,6 +133,7 @@ const emitGameQuestions = async (gameId, hostId, socket) => {
         a4: answers[3],
         correct: correct,
         playersInGame: playersInGame.length,
+        questions: gameData.questions.length,
       });
     }
   } catch (err) {
