@@ -31,15 +31,17 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
 
     if (gameData.questions.length >= game.gameData.question) {
       const currentQuestion = gameData.questions[game.gameData.question - 1];
+      appLogger.info("currentQuestion", currentQuestion);
 
       socket.emit("gameQuestions", {
-        q1: currentQuestion.question,
+        q1: currentQuestion.title,
         a1: currentQuestion.answers[0],
         a2: currentQuestion.answers[1],
         a3: currentQuestion.answers[2],
         a4: currentQuestion.answers[3],
         correct: currentQuestion.correct,
         playersInGame: playerData.length,
+        questions: gameData.questions.length,
       });
     } else {
       const playersInGame = await players.getPlayers(game.hostId);
