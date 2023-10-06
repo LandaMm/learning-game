@@ -27,6 +27,12 @@ class Quizes {
         query.createdBy = user;
       }
     }
+    if (filter && filter !== "all") {
+      const user = await teachers.findById(filter);
+      if (user) {
+        query.createdBy = user;
+      }
+    }
     appLogger.info("getting quizes with filter", query);
     return await this.model.find(query).sort({ createdAt: -1 }).exec();
   }
