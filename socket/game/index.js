@@ -20,8 +20,8 @@ const quizes = new Quizes();
 const teachers = new Teachers();
 
 const registerGameHandlers = (socket, io) => {
-  socket.on("requestDbNames", (filter) =>
-    requestGamesHandler(socket, quizes, teachers, filter),
+  socket.on("requestDbNames", ({ filter, adminToken }) =>
+    requestGamesHandler(socket, quizes, teachers, filter, adminToken),
   );
   socket.on("removeQuiz", (quizId) => {
     removeQuizHandler(socket, quizes, teachers, quizId);

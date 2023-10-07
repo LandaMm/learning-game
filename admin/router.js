@@ -8,6 +8,7 @@ const GameStatsService = require("../services/gameStats");
 
 const jwt = require("jsonwebtoken");
 const Quizes = require("../services/quiz");
+const { verifyAdmin } = require("./service");
 
 const adminRouter = Router();
 
@@ -40,29 +41,11 @@ adminRouter.use((req, res, next) => {
       });
 
     try {
-      const payload = jwt.verify(authToken, ADMIN_TOKEN_SECRET, {
-        algorithms: "HS256",
-      });
-
-      if (!payload)
-        return res.status(401).json({
-          statusCode: 401,
-          message: "Unauthorized",
-        });
-
-      adminLogger.info("verified token with payload:", payload);
-
-      const { username, password } = payload;
-
-      if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD)
-        return res.status(401).json({
-          statusCode: 401,
-          message: "Unauthorized",
-        });
+      verifyAdmin(authToken);
     } catch (err) {
       return res.status(401).json({
         statusCode: 401,
-        message: "Unauthorized",
+        message: err?.message || "Unauthorized",
       });
     }
   }

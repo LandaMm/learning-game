@@ -1,6 +1,20 @@
+const { verifyAdmin } = require("../../../admin/service");
 const { appLogger } = require("../../../logger");
 
-const requestGamesHandler = async (socket, quizes, teachers, filter) => {
+const requestGamesHandler = async (
+  socket,
+  quizes,
+  teachers,
+  filter,
+  adminToken,
+) => {
+  let verifiedAdmin = false;
+  try {
+    verifiedAdmin = verifyAdmin(adminToken) === true;
+  } catch (err) {
+    /* empty */
+  }
+
   try {
     appLogger.info(
       "get quizes with filter for socket",
@@ -8,7 +22,11 @@ const requestGamesHandler = async (socket, quizes, teachers, filter) => {
       socket.handshake.auth,
     );
     const token = socket.handshake.auth?.token;
-    const gamesList = await quizes.getAllQuizes(teachers, filter, token);
+    const gamesList = await quizes.getAllQuizes(
+      teachers,
+      verifiedAdmin ? filter : "my",
+      token,
+    );
     appLogger.info("gamesList", gamesList);
     socket.emit("gameNamesData", gamesList);
   } catch (err) {
