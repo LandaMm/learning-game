@@ -21,13 +21,14 @@ class Quizes {
 
   async getAllQuizes(teachers, filter, token) {
     const query = {};
+    appLogger.info("filter argument", filter);
     if (filter === "my") {
       const user = await teachers.findByAccessToken(token);
       if (user) {
         query.createdBy = user;
       }
     }
-    if (filter && filter !== "all") {
+    if (filter && !["all", "my"].includes(filter)) {
       const user = await teachers.findById(filter);
       if (user) {
         query.createdBy = user;
