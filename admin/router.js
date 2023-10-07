@@ -133,7 +133,8 @@ adminRouter.get("/games", async (req, res) => {
 
 adminRouter.get("/quizes", async (req, res) => {
   const teacherFilter = req.query.teacher;
-  const quizList = await quizes.getAllQuizes(teacherFilter || "all");
+  appLogger.info("req.query", req.query);
+  const quizList = await quizes.getAllQuizes(teachers, teacherFilter || "all");
   res.status(200).json(quizList);
 });
 
