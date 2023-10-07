@@ -154,16 +154,22 @@ adminRouter.delete("/games/:id", async (req, res) => {
 
 adminRouter.get("/games/:id", async (req, res) => {
   const gameId = req.params.id;
-  const easiestQuestions = await gameStats.findGameEasiestQuestions(gameId);
-  appLogger.info("easiest questions (router)", easiestQuestions);
-  const hardestQuestions = await gameStats.findGameHardestQuestions(gameId);
-  const mostNoAnswerQuestions =
-    await gameStats.findGameMostMissAnsweredQuestions(gameId);
-  res.status(200).json({
-    easiest: easiestQuestions,
-    hardest: hardestQuestions,
-    mostNoAnswer: mostNoAnswerQuestions,
-  });
+  const sortBy = req.query.sortBy;
+  let questions;
+  if (sortBy === "easiest") {
+    questions = await gameStats.findGameEasiestQuestions(gameId);
+    appLogger.info("easiest questions (router)", questions);
+  }
+  if (sortBy == "hardest")
+    questions = await gameStats.findGameHardestQuestions(gameId);
+  if (sortBy === "mostNoAnswer") {
+    questions = await gameStats.findGameMostMissAnsweredQuestions(gameId);
+  }
+
+  if (!["easiest", "hardest", "mostNoAnswer"].includes(sortBy)) {
+    questions = await gameStats.findGameEasiestQuestions(gameId);
+  }
+  res.status(200).json(questions);
 });
 
 adminRouter.get("/quizes/:id/stats", async (req, res) => {
