@@ -29,7 +29,7 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
       const gameData = await quizes.findById(gameid); // Using utilities to fetch data
 
       var correctAnswer = gameData.questions[gameQuestion - 1].correct;
-      const weight = gameData.questions[gameQuestion - 1].weight || 100;
+      const weight = Number(gameData.questions[gameQuestion - 1].weight) || 100;
 
       // Check player's answer with the correct answer
       if (num == correctAnswer) {

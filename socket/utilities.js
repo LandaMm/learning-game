@@ -87,7 +87,7 @@ async function handlePlayerAnswer(player, game, num, socket, io) {
     const gameData = await fetchGameDataById(game.gameData.gameid);
     if (!gameData) return;
     const correctAnswer = gameData.questions[gameQuestion - 1].correct;
-    const weight = gameData.questions[gameQuestion - 1].weight || 100;
+    const weight = Number(gameData.questions[gameQuestion - 1].weight) || 100;
 
     if (num == correctAnswer) {
       player.gameData.score += weight;
