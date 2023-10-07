@@ -71,7 +71,9 @@ class GameStatsService {
       }
       return copy;
     }, []);
-    const sorted = grouped.sort((a, b) => b.correctCount - a.correctCount);
+    const sorted = grouped
+      .sort((a, b) => b.correctCount - a.correctCount)
+      .filter((i) => i.correctCount > 0);
     appLogger.info("sorted", sorted);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
@@ -99,7 +101,9 @@ class GameStatsService {
       }
       return copy;
     }, []);
-    const sorted = grouped.sort((a, b) => b.noAnswerCount - a.noAnswerCount);
+    const sorted = grouped
+      .sort((a, b) => b.noAnswerCount - a.noAnswerCount)
+      .filter((i) => i.noAnswerCount > 0);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
@@ -126,7 +130,9 @@ class GameStatsService {
       }
       return copy;
     }, []);
-    const sorted = grouped.sort((a, b) => b.incorrectCount - a.incorrectCount);
+    const sorted = grouped
+      .sort((a, b) => b.incorrectCount - a.incorrectCount)
+      .filter((i) => i.incorrectCount > 0);
     return {
       questions: sorted.map((q) => quiz.questions[q.questionIndex - 1]),
       stats: sorted,
@@ -154,10 +160,12 @@ class GameStatsService {
 
     const quiz = await quizes.findById(quizId);
 
-    return easiestQuestion.map((q) => ({
-      ...q,
-      title: quiz.questions[q._id - 1].title,
-    }));
+    return easiestQuestion
+      .filter((i) => i.correct > 0)
+      .map((q) => ({
+        ...q,
+        title: quiz.questions[q._id - 1].title,
+      }));
   }
 
   async findQuizHardestQuestions(quizId) {
@@ -179,10 +187,12 @@ class GameStatsService {
 
     const quiz = await quizes.findById(quizId);
 
-    return hardestQuestion.map((q) => ({
-      ...q,
-      title: quiz.questions[q._id - 1].title,
-    }));
+    return hardestQuestion
+      .filter((i) => i.incorrect > 0)
+      .map((q) => ({
+        ...q,
+        title: quiz.questions[q._id - 1].title,
+      }));
   }
 
   async findQuizMostNoAnswerQuestions(quizId) {
@@ -204,10 +214,12 @@ class GameStatsService {
 
     const quiz = await quizes.findById(quizId);
 
-    return mostNoAnswerQuestions.map((q) => ({
-      ...q,
-      title: quiz.questions[q._id - 1].title,
-    }));
+    return mostNoAnswerQuestions
+      .filter((i) => i.noAnswer > 0)
+      .map((q) => ({
+        ...q,
+        title: quiz.questions[q._id - 1].title,
+      }));
   }
 }
 

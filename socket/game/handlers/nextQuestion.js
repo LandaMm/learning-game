@@ -1,6 +1,13 @@
 const { appLogger } = require("../../../logger");
 
-const nextQuestionHandler = async (socket, io, games, players, utilities) => {
+const nextQuestionHandler = async (
+  socket,
+  io,
+  games,
+  players,
+  utilities,
+  questionIndex,
+) => {
   var playerData = await players.getPlayers(socket.id);
 
   appLogger.info(playerData);
@@ -19,11 +26,13 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
     socket.emit("noGameFound");
     return;
   }
-  game.gameData.playersAnswered = 0;
-  game.gameData.questionLive = true;
-  game.gameData.question += 1;
-  game.markModified("gameData");
-  await game.save();
+  if (game.gameData.question < questionIndex + 1) {
+    game.gameData.playersAnswered = 0;
+    game.gameData.questionLive = true;
+    game.gameData.question += 1;
+    game.markModified("gameData");
+    await game.save();
+  }
   var gameid = game.gameData.gameid;
 
   try {
@@ -47,7 +56,6 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
       const playersInGame = await players.getPlayers(game.hostId);
       const leaderboard = playersInGame
         .sort((a, b) => b.gameData.score - a.gameData.score)
-        .slice(0, 5)
         .map((p) => ({ name: p.name, score: p.gameData.score }));
 
       appLogger.info("emitting game over event");
@@ -56,28 +64,7 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
         playersInGame.map((p) => p.playerId),
       );
       appLogger.info(io.sockets.adapter.rooms);
-      io.to(game.pin).emit("GameOver", {
-        num1: {
-          name: leaderboard[0]?.name || "",
-          score: leaderboard[0]?.score,
-        },
-        num2: {
-          name: leaderboard[1]?.name || "",
-          score: leaderboard[1]?.score,
-        },
-        num3: {
-          name: leaderboard[3]?.name || "",
-          score: leaderboard[3]?.score,
-        },
-        num4: {
-          name: leaderboard[4]?.name || "",
-          score: leaderboard[4]?.score,
-        },
-        num5: {
-          name: leaderboard[5]?.name || "",
-          score: leaderboard[5]?.score,
-        },
-      });
+      io.to(game.pin).emit("GameOver", leaderboard);
       // const result = await players.removePlayersByHostId(game.hostId);
       // appLogger.info("deleted all game's players", result);
       const gameFinishResult = await games.finishGame(game.hostId);

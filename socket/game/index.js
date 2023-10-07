@@ -38,8 +38,8 @@ const registerGameHandlers = (socket, io) => {
   socket.on("timeUp", () =>
     timeUpHandler(socket, io, games, players, utilities),
   );
-  socket.on("nextQuestion", () =>
-    nextQuestionHandler(socket, io, games, players, utilities),
+  socket.on("nextQuestion", (questionIndex) =>
+    nextQuestionHandler(socket, io, games, players, utilities, questionIndex),
   );
   socket.on("startGame", () => startGameHandler(socket, games));
   socket.on("newQuiz", (data) => newQuizHandler(socket, data, utilities));
