@@ -1,11 +1,14 @@
 const jwt = require("jsonwebtoken");
 const { adminLogger } = require("../logger");
+const Teachers = require("../services/teacher");
+
+const teachers = new Teachers();
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET;
 
-const verifyAdmin = (authToken) => {
+const verifyAdmin = async (authToken) => {
   try {
     const payload = jwt.verify(authToken, ADMIN_TOKEN_SECRET, {
       algorithms: "HS256",
@@ -22,6 +25,10 @@ const verifyAdmin = (authToken) => {
 
     return true;
   } catch (err) {
+    const teacher = await teachers.findByAccessToken(authToken);
+    if (teacher && teacher.isAdmin === true) {
+      return true;
+    }
     throw new Error("Unauthorized");
   }
 };
