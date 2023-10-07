@@ -174,15 +174,22 @@ adminRouter.get("/games/:id", async (req, res) => {
 
 adminRouter.get("/quizes/:id/stats", async (req, res) => {
   const quizId = req.params.id;
-  const easiestQuestions = await gameStats.findQuizEasiestQuestions(quizId);
-  const hardestQuestions = await gameStats.findQuizHardestQuestions(quizId);
-  const mostNoAnswerQuestions =
-    await gameStats.findQuizMostNoAnswerQuestions(quizId);
-  res.status(200).json({
-    easiest: easiestQuestions,
-    hardest: hardestQuestions,
-    mostNoAnswer: mostNoAnswerQuestions,
-  });
+  const sortBy = req.query.sortBy;
+  let questions;
+  if (sortBy === "easiest") {
+    questions = await gameStats.findQuizEasiestQuestions(quizId);
+    appLogger.info("easiest questions (router)", questions);
+  }
+  if (sortBy == "hardest")
+    questions = await gameStats.findQuizHardestQuestions(quizId);
+  if (sortBy === "mostNoAnswer") {
+    questions = await gameStats.findQuizMostNoAnswerQuestions(quizId);
+  }
+
+  if (!["easiest", "hardest", "mostNoAnswer"].includes(sortBy)) {
+    questions = await gameStats.findQuizEasiestQuestions(quizId);
+  }
+  res.status(200).json(questions);
 });
 
 module.exports = adminRouter;
