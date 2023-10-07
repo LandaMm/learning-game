@@ -10,6 +10,7 @@ const QuizSchema = new mongoose.Schema(
      *  question: String,
      *  answers: Array,
      *  correct: String
+     *  weight: Number
      * }
      */
     questions: Array,
