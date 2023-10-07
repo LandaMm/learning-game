@@ -11,6 +11,7 @@ const { appLogger } = require("./logger");
 
 const adminRouter = require("./admin/router");
 const teacherRouter = require("./teacher/router");
+const makeAdmin = require("./admin/makeadmin");
 
 require("dotenv").config();
 
@@ -28,6 +29,8 @@ app.use(cors());
 
 app.use("/admin", adminRouter);
 app.use("/teacher", teacherRouter);
+
+makeAdmin(app);
 
 registerIO(server, (io) => {
   initializeSocketHandlers(io);
