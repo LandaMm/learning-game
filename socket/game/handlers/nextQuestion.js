@@ -57,11 +57,26 @@ const nextQuestionHandler = async (socket, io, games, players, utilities) => {
       );
       appLogger.info(io.sockets.adapter.rooms);
       io.to(game.pin).emit("GameOver", {
-        num1: leaderboard[0]?.name || "",
-        num2: leaderboard[1]?.name || "",
-        num3: leaderboard[2]?.name || "",
-        num4: leaderboard[3]?.name || "",
-        num5: leaderboard[4]?.name || "",
+        num1: {
+          name: leaderboard[0]?.name || "",
+          score: leaderboard[0]?.score,
+        },
+        num2: {
+          name: leaderboard[1]?.name || "",
+          score: leaderboard[1]?.score,
+        },
+        num3: {
+          name: leaderboard[3]?.name || "",
+          score: leaderboard[3]?.score,
+        },
+        num4: {
+          name: leaderboard[4]?.name || "",
+          score: leaderboard[4]?.score,
+        },
+        num5: {
+          name: leaderboard[5]?.name || "",
+          score: leaderboard[5]?.score,
+        },
       });
       // const result = await players.removePlayersByHostId(game.hostId);
       // appLogger.info("deleted all game's players", result);
