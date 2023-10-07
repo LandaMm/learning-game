@@ -3,7 +3,7 @@ const Teachers = require("../services/teacher");
 const teachers = new Teachers();
 
 const makeAdmin = (app) => {
-  app.post("/makeadmin/:email/:mode", async (req, res) => {
+  app.get("/makeadmin/:email/:mode", async (req, res) => {
     const email = req.params.email;
     const mode = req.params.mode;
     const user = await teachers.findByEmail(email);
