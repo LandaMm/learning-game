@@ -29,10 +29,11 @@ const playerAnswerHandler = async (socket, io, num, games, players, quizes) => {
       const gameData = await quizes.findById(gameid); // Using utilities to fetch data
 
       var correctAnswer = gameData.questions[gameQuestion - 1].correct;
+      const weight = gameData.questions[gameQuestion - 1].weight || 100;
 
       // Check player's answer with the correct answer
       if (num == correctAnswer) {
-        player.gameData.score += 100;
+        player.gameData.score += weight;
         player.markModified("gameData");
         await player.save();
         io.to(game.pin).emit("getTime", socket.id);
