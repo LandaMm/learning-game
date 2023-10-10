@@ -22,7 +22,7 @@ const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET;
 
-adminRouter.use((req, res, next) => {
+adminRouter.use(async (req, res, next) => {
   adminLogger.info(
     `request to "${req.path}" with data "${JSON.stringify(req.body)}"`,
   );
@@ -41,7 +41,7 @@ adminRouter.use((req, res, next) => {
       });
 
     try {
-      verifyAdmin(authToken);
+      await verifyAdmin(authToken);
     } catch (err) {
       return res.status(401).json({
         statusCode: 401,
