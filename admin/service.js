@@ -26,6 +26,7 @@ const verifyAdmin = async (authToken) => {
     return true;
   } catch (err) {
     const teacher = await teachers.findByAccessToken(authToken);
+    adminLogger.info("teacher admin verifying", teacher);
     if (teacher && teacher.isAdmin === true) {
       return true;
     }
