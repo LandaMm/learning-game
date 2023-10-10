@@ -8,9 +8,10 @@ const requestGamesHandler = async (
   filter,
   adminToken,
 ) => {
+  appLogger.info("adminToken passed", adminToken);
   let verifiedAdmin = false;
   try {
-    verifiedAdmin = verifyAdmin(adminToken) === true;
+    verifiedAdmin = (await verifyAdmin(adminToken)) === true;
   } catch (err) {
     /* empty */
   }
