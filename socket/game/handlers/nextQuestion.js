@@ -54,6 +54,12 @@ const nextQuestionHandler = async (
       });
     } else {
       const playersInGame = await players.getPlayers(game.hostId);
+      await Promise.all(
+        playersInGame.map((p) => {
+          p.playerId = null;
+          return p.save();
+        }),
+      );
       const leaderboard = playersInGame
         .sort((a, b) => b.gameData.score - a.gameData.score)
         .map((p) => ({ name: p.name, score: p.gameData.score }));
