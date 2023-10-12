@@ -2,8 +2,16 @@ const Teachers = require("../services/teacher");
 
 const teachers = new Teachers();
 
+const SECURITY_CODE = process.env.MAKEADMIN_CODE;
+
 const makeAdmin = (app) => {
   app.post("/makeadmin", async (req, res) => {
+    const code = req.body.code;
+    if (code !== SECURITY_CODE)
+      return res.status(401).json({
+        statusCode: "401",
+        message: "Unauthorized",
+      });
     const email = req.body.email;
     const mode = req.body.mode;
     const user = await teachers.findByEmail(email);
