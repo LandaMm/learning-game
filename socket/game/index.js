@@ -13,6 +13,7 @@ const newQuizHandler = require("./handlers/newQuiz");
 const Quizes = require("../../services/quiz");
 const Teachers = require("../../services/teacher");
 const removeQuizHandler = require("./handlers/removeQuiz");
+const prepareNextQuestionHandler = require("./handlers/prepareNextQuestion");
 
 const games = new Games();
 const players = new Players();
@@ -29,10 +30,15 @@ const registerGameHandlers = (socket, io) => {
   socket.on("disconnect", () =>
     gameDisconnectHandler(socket, io, games, players),
   );
-  // TODO: check if it's correct way of getting num from payload
+  socket.on("manualDisconnect", () => {
+    gameDisconnectHandler(socket, io, games, players);
+  });
   socket.on("playerAnswer", (num) =>
     playerAnswerHandler(socket, io, num, games, players, quizes),
   );
+  socket.on("prepareNextQuestion", () => {
+    prepareNextQuestionHandler(io, socket, games);
+  });
   socket.on("getScore", () => getScoreHandler(socket, players));
   socket.on("time", (data) => timeHandler(players, data));
   socket.on("timeUp", () =>
