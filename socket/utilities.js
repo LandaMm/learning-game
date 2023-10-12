@@ -60,12 +60,16 @@ const handleHostDisconnect = async (game, io, socket) => {
 
 const handlePlayerDisconnect = async (playerId, io, socket) => {
   const player = await players.getPlayer(playerId);
+  appLogger.info("handlePlayerDisconnect", player);
   if (player) {
-    const game = games.getGame(player.hostId);
+    const game = await games.getGame(player.hostId);
+    appLogger.info("game:", game);
     if (game && !game.gameLive) {
-      players.removePlayer(playerId);
+      await players.removePlayer(playerId);
       const playersInGame = await players.getPlayers(game.hostId);
+      appLogger.info("playersInGame", playersInGame);
       io.to(game.pin).emit("updatePlayerLobby", playersInGame);
+      io.to(player.hostId).emit("updatePlayerLobby", playersInGame);
       socket.leave(game.pin);
     }
   }
